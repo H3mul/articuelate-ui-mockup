@@ -55,8 +55,26 @@ If the browser canvas renders a blank screen, a white page, or an unstyled layou
 - **Remediate Text First:** Fix the raw text code errors discovered in the log files before triggering another visual check.
 
 
-## 7. RUNTIME ENVIRONMENT RESTRICTIONS (CRITICAL)
+### RUNTIME ENVIRONMENT RESTRICTIONS (CRITICAL)
 - **Do Not Start Dev Servers:** You are strictly prohibited from executing `npm run dev`, `next dev`, `yarn dev`, or any server-spawning scripts. 
 - **The Host Owns the Port:** The human operator is continuously running the Next.js development server on `http://localhost:3000` (or `http://127.0.0.1:3000`).
 - **Read-Only Port Access:** To see runtime data, console logs, or layout configurations, you must exclusively use your active MCP tools (`chrome-devtools-mcp`) targeting the existing, running port. 
 - **Code Modifications Only:** Your interface updates should be achieved strictly by editing files inside the directory tree. Let Next.js Fast Refresh automatically handle the hot-reloading pipeline on the host's terminal session. Never attempt to restart or kill local server processes.
+
+
+## 7. TEXT-BASED VISUAL AUDITING (FOR NON-VISION TIER MODELLING)
+If you are operating without native visual/image ingestion capabilities (e.g., text-only configurations), or to save token overhead, you are STRICTLY REQUIRED to audit layouts using mathematical DOM computation instead of raw screenshots.
+
+### Step-by-Step Computational Layout Audit:
+1. **Target Identification:** Use `evaluate_script` or node-traversal tools to locate the specific HTML element experiencing design anomalies (e.g., checking classes like `navbar` or unique IDs like `#cta-button`).
+2. **Fetch Real Pixel Geometry:** Invoke `evaluate_script` passing a script to extract the exact layout bounding box. This reveals if items are overlapping, squished, or sizing down to 0px:
+   * Action script to run: `() => document.querySelector('YOUR_SELECTOR').getBoundingClientRect()`
+   * Analyze returned properties: `width`, `height`, `top`, `left`.
+3. **Inspect Computed Layout Properties:** Do not guess which Tailwind class is overriding your styles. Invoke your devtools to pull the final executed browser engine properties:
+   * Action script to run: `() => window.getComputedStyle(document.querySelector('YOUR_SELECTOR'))`
+   * Specifically request critical layout keys: `padding`, `margin`, `display`, `flex-direction`, `box-sizing`, and `z-index`.
+
+### Error & Conflict Resolution via Text Data:
+- **Overlapping Elements:** If text overlaps, fetch the `getBoundingClientRect()` of both adjacent elements. Compare the `bottom` coordinates of the upper element against the `top` coordinates of the lower element. If `bottom > top`, calculation proves overlap. Resolve by adding clear spacing utilities (`space-y-*` or `gap-*`).
+- **Hidden/Clipped Content:** If elements are missing from the live screen canvas, check if their computed `display` resolves to `none`, `opacity` is `0`, or if an ancestor container enforces `overflow: hidden` on a element with broken absolute bounding flags.
+- **Responsiveness Math:** To verify mobile responsiveness layout rules textually, run `resize_page` to `width: 375, height: 812`, and re-query the target selector's computed `width`. If the width expands past `375px`, it means the container is bleeding outside the viewport bounds. Inject a fixed maximum bounds (such as `max-w-full` or `overflow-x-hidden`) immediately.

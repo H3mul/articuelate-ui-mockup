@@ -1,16 +1,21 @@
 "use client"
 
-import {
-  Play,
-  Music,
-  Lightbulb,
-  Folder,
-  Radio,
-  SlidersHorizontal,
-  Spline,
-} from "lucide-react"
+import { Play, Music, Lightbulb, Folder, Radio, SlidersHorizontal, Spline } from "lucide-react"
 import type { Cue, CueKind } from "./cue-data"
 import { CUES, CUE_COLORS } from "./cue-data"
+
+/** Convert "MM:SS" to "M:SS.000" microsecond-style display. */
+function microtime(mmss: string): string {
+  const [m, s] = mmss.split(":")
+  return `${parseInt(m, 10)}:${s}.00`
+}
+
+/** Strip the cue type prefix from target text (e.g. "audio · file.wav" → "file.wav"). */
+function stripType(target: string): string {
+  const sep = " · "
+  const idx = target.indexOf(sep)
+  return idx === -1 ? target : target.slice(idx + sep.length)
+}
 
 function KindIcon({ kind }: { kind: CueKind }) {
   const cls = "h-3.5 w-3.5 shrink-0"
@@ -46,8 +51,13 @@ function TimeCell({
   variant?: "plain" | "fill" | "outline"
   emphasize?: boolean
 }) {
+  const showBorder = variant === "fill" || variant === "outline"
+
   return (
-    <div className="relative flex h-5 items-center justify-end overflow-hidden rounded-[3px] px-1.5">
+    <div
+      className="relative flex h-5 items-center justify-end overflow-hidden rounded-[3px] px-1.5"
+      style={showBorder ? { border: "2px solid rgba(166, 218, 149, 0.3)" } : undefined}
+    >
       {variant === "fill" && (
         <div
           className="absolute inset-y-0 left-0 bg-[#A6DA95]/30"
@@ -94,7 +104,7 @@ function CueRow({
     <button
       type="button"
       onClick={onSelect}
-      className={`group grid w-full grid-cols-[20px_46px_1fr_58px_82px_58px] items-center gap-1 border-b border-[#181926]/60 px-2 py-1 text-left text-[13px] outline-none focus:ring-1 focus:ring-inset focus:ring-[#8AADF4] ${rowBg}`}
+      className={`group grid w-full grid-cols-[20px_46px_1fr_1fr_70px_70px_70px] items-center gap-1 border-b border-[#181926]/60 px-2 py-1 text-left text-[13px] outline-none focus:ring-1 focus:ring-inset focus:ring-[#8AADF4] ${rowBg}`}
       style={{ borderLeft: `3px solid ${stripe ?? "transparent"}` }}
     >
       {/* Playhead */}
@@ -114,7 +124,7 @@ function CueRow({
         {cue.number}
       </div>
 
-      {/* Name · type icon · file — all inline on a single line */}
+      {/* Name · type icon */}
       <div
         className="flex min-w-0 items-center gap-1.5"
         style={{ paddingLeft: cue.depth * 14 }}
@@ -125,21 +135,23 @@ function CueRow({
         <span className={`shrink truncate font-sans font-medium ${primaryText}`}>
           {cue.name}
         </span>
-        <span className={`shrink-0 truncate font-mono text-[11px] ${mutedText}`}>
-          {cue.target}
-        </span>
+      </div>
+
+      {/* Context / target — separate column for vertical alignment */}
+      <div className={`truncate font-mono text-[11px] ${mutedText}`}>
+        {stripType(cue.target)}
       </div>
 
       {/* Pre-wait — fills during pre-delay */}
       <TimeCell
-        value={cue.preWait}
+        value={microtime(cue.preWait)}
         variant={cue.preProgress ? "fill" : "plain"}
         fill={cue.preProgress ?? 0}
       />
 
       {/* Duration — fills with playback progress; outlined when armed */}
       <TimeCell
-        value={cue.duration}
+        value={microtime(cue.duration)}
         variant={running ? "fill" : standby ? "outline" : "plain"}
         fill={cue.progress ?? 0}
         emphasize={running}
@@ -147,7 +159,7 @@ function CueRow({
 
       {/* Post-wait — fills during post-delay */}
       <TimeCell
-        value={cue.postWait}
+        value={microtime(cue.postWait)}
         variant={cue.postProgress ? "fill" : "plain"}
         fill={cue.postProgress ?? 0}
       />
@@ -165,13 +177,14 @@ export function Cuelist({
   return (
     <section className="flex min-h-0 flex-1 flex-col bg-[#1E2030]">
       {/* Header row */}
-      <div className="grid shrink-0 grid-cols-[20px_46px_1fr_58px_82px_58px] items-center gap-1 border-b border-[#363A4F] px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#B8C0E0]">
+      <div className="grid shrink-0 grid-cols-[20px_46px_1fr_1fr_70px_70px_70px] items-center gap-1 border-b border-[#363A4F] px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#B8C0E0]">
         <div />
         <div>Cue</div>
-        <div>Name / File</div>
-        <div className="text-right">Pre</div>
-        <div className="text-right">Duration</div>
-        <div className="text-right">Post</div>
+        <div>Name</div>
+        <div />
+        <div className="text-center">Pre</div>
+        <div className="text-center">Duration</div>
+        <div className="text-center">Post</div>
       </div>
 
       {/* Rows */}

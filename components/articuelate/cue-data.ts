@@ -192,6 +192,7 @@ export interface ActiveCue {
   /** seconds */
   elapsed: number
   remaining: number
+  duration: number
   progress: number
   color: CueColor
   /** live output level 0-1 for the per-cue meter */
@@ -206,6 +207,7 @@ export const ACTIVE_CUES: ActiveCue[] = [
     file: "rain_loop.wav",
     elapsed: 113,
     remaining: 157,
+    duration: 270,
     progress: 0.42,
     color: "green",
     level: 0.54,
@@ -217,6 +219,7 @@ export const ACTIVE_CUES: ActiveCue[] = [
     file: "rumble_lo.wav",
     elapsed: 111,
     remaining: 249,
+    duration: 360,
     progress: 0.31,
     color: "none",
     level: 0.33,
@@ -228,6 +231,7 @@ export const ACTIVE_CUES: ActiveCue[] = [
     file: "act1_intro.wav",
     elapsed: 38,
     remaining: 7,
+    duration: 45,
     progress: 0.84,
     color: "blue",
     level: 0.78,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useId } from "react"
+import { useState, useId, useRef, useMemo, useLayoutEffect } from "react"
 import { Pause, Play, X, SkipBack, Spline } from "lucide-react"
 import type { ActiveCue, FadeState } from "./cue-data"
 import { ACTIVE_CUES, CUE_COLORS, fmt } from "./cue-data"
@@ -27,7 +27,7 @@ function VerticalLEDMeter({
   const litCount = Math.round(normalizedLevel * count)
 
   return (
-    <div className={`flex ${width} flex-col-reverse gap-px`}>
+    <div className={`flex ${width} flex-col-reverse items-center gap-px`}>
       {Array.from({ length: count }).map((_, i) => {
         const isLit = i < litCount
         let color = "#A6DA95"
@@ -36,7 +36,7 @@ function VerticalLEDMeter({
         return (
           <div
             key={i}
-            className="h-1.5 w-full rounded-sm"
+            className="h-1.5 w-1.5 rounded-full"
             style={{
               backgroundColor: isLit ? color : "#11121C",
               opacity: isLit ? 1 : 0.25,
@@ -60,7 +60,8 @@ function WaveformProgress({
   accentColor = "#8AADF4",
   dimColor = "#363A4F",
   height = 28,
-  barCount = 40,
+  barWidth = 4,
+  barGap = 3,
   onChange,
   label,
 }: {
@@ -68,30 +69,50 @@ function WaveformProgress({
   accentColor?: string
   dimColor?: string
   height?: number
-  barCount?: number
+  barWidth?: number
+  barGap?: number
   onChange?: (v: number) => void
   label?: string
 }) {
   const id = useId()
   const clipId = `wv-clip-${id.replace(/:/g, "")}`
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [numBars, setNumBars] = useState(0)
+  const [containerWidth, setContainerWidth] = useState(0)
 
-  // Fixed pseudo-waveform amplitude pattern (deterministic, looks natural)
-  const amplitudes = Array.from({ length: barCount }, (_, i) => {
-    const t = i / barCount
-    const base = 0.4 + 0.55 * Math.abs(Math.sin(i * 2.3 + 0.7))
-    const env = Math.sin(Math.PI * t) * 0.35 + 0.65
-    return Math.min(1, base * env)
-  })
+  useLayoutEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const measure = () => {
+      const w = el.getBoundingClientRect().width
+      setContainerWidth(w)
+      setNumBars(Math.max(1, Math.floor((w + barGap) / (barWidth + barGap))))
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [barWidth, barGap])
 
-  const w = 100
+  const amplitudes = useMemo(() => {
+    if (numBars === 0) return []
+    return Array.from({ length: numBars }, (_, i) => {
+      const t = i / numBars
+      const base = 0.4 + 0.55 * Math.abs(Math.sin(i * 2.3 + 0.7))
+      const env = Math.sin(Math.PI * t) * 0.35 + 0.65
+      return Math.min(1, base * env)
+    })
+  }, [numBars])
+
   const h = height
-  const barW = w / barCount
-  const gap = barW * 0.25
-  const bw = barW - gap
+  const r = Math.min(barWidth / 2, h / 2)
+
+  if (numBars === 0 || containerWidth === 0) {
+    return <div ref={containerRef} className="relative w-full" style={{ height }} />
+  }
 
   return (
-    <div className="relative w-full" style={{ height }}>
-      {/* Clickable/draggable range input layered on top for scrubbing */}
+    <div ref={containerRef} className="relative w-full" style={{ height }}>
       {onChange && (
         <input
           type="range"
@@ -104,75 +125,41 @@ function WaveformProgress({
         />
       )}
       <svg
-        viewBox={`0 0 ${w} ${h}`}
+        viewBox={`0 0 ${containerWidth} ${h}`}
         preserveAspectRatio="none"
         width="100%"
         height={h}
         aria-hidden
       >
         <defs>
-          {/* Clip rect grows from left to progress */}
           <clipPath id={clipId}>
-            <rect x={0} y={0} width={w * progress} height={h} />
+            <rect x={0} y={0} width={containerWidth * progress} height={h} />
           </clipPath>
         </defs>
 
-        {/* Dim bars (full width, behind everything) */}
         {amplitudes.map((amp, i) => {
-          const x = i * barW + gap / 2
-          const barH = h * amp
-          const cy = h / 2
+          const x = i * (barWidth + barGap)
+          const barH = Math.max(1, h * amp)
           return (
-            <g key={i}>
-              {/* Top half */}
-              <rect
-                x={x}
-                y={cy - barH / 2}
-                width={bw}
-                height={barH / 2}
-                rx={bw / 2}
-                fill={dimColor}
-              />
-              {/* Bottom half (mirror) */}
-              <rect
-                x={x}
-                y={cy}
-                width={bw}
-                height={barH / 2}
-                rx={bw / 2}
-                fill={dimColor}
-              />
-            </g>
+            <path
+              key={i}
+              d={`M ${x} ${h} L ${x} ${h - barH + r} Q ${x} ${h - barH} ${x + r} ${h - barH} L ${x + barWidth - r} ${h - barH} Q ${x + barWidth} ${h - barH} ${x + barWidth} ${h - barH + r} L ${x + barWidth} ${h} Z`}
+              fill={dimColor}
+            />
           )
         })}
 
-        {/* Lit bars — clipped to progress region */}
         <g clipPath={`url(#${clipId})`}>
           {amplitudes.map((amp, i) => {
-            const x = i * barW + gap / 2
-            const barH = h * amp
-            const cy = h / 2
+            const x = i * (barWidth + barGap)
+            const barH = Math.max(1, h * amp)
             return (
-              <g key={i}>
-                <rect
-                  x={x}
-                  y={cy - barH / 2}
-                  width={bw}
-                  height={barH / 2}
-                  rx={bw / 2}
-                  fill={accentColor}
-                  opacity={0.9}
-                />
-                <rect
-                  x={x}
-                  y={cy}
-                  width={bw}
-                  height={barH / 2}
-                  rx={bw / 2}
-                  fill={accentColor}
-                  opacity={0.9}
-                />
-              </g>
+              <path
+                key={i}
+                d={`M ${x} ${h} L ${x} ${h - barH + r} Q ${x} ${h - barH} ${x + r} ${h - barH} L ${x + barWidth - r} ${h - barH} Q ${x + barWidth} ${h - barH} ${x + barWidth} ${h - barH + r} L ${x + barWidth} ${h} Z`}
+                fill={accentColor}
+                opacity={0.9}
+              />
             )
           })}
         </g>
@@ -185,11 +172,13 @@ function GlobalButton({
   icon,
   label,
   active,
+  danger,
   onClick,
 }: {
   icon: React.ReactNode
   label: string
   active?: boolean
+  danger?: boolean
   onClick?: () => void
 }) {
   return (
@@ -199,7 +188,9 @@ function GlobalButton({
       title={label}
       aria-label={label}
       className={`flex h-7 w-7 items-center justify-center rounded-sm border outline-none transition-colors focus:ring-2 focus:ring-[#8AADF4] ${
-        active
+        danger
+          ? "border-[#363A4F] bg-[#11121C] text-[#ED8796] hover:bg-[#ED8796]/15"
+          : active
           ? "border-[#F5A97F] bg-[#F5A97F]/15 text-[#F5A97F]"
           : "border-[#363A4F] bg-[#11121C] text-[#B8C0E0] hover:bg-[#181926] hover:text-[#CAD3F5]"
       }`}
@@ -250,15 +241,27 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
 
   return (
     <div
-      className="flex h-12 items-stretch gap-1.5 rounded-sm border border-[#363A4F] bg-[#181926] px-2"
+      className="relative flex h-20 items-stretch gap-1.5 rounded-sm border border-[#363A4F] bg-[#181926] px-2"
       style={{ borderLeft: `3px solid ${stripe}` }}
     >
-      {/* Left column: top row (buttons + identity), bottom row (waveform) */}
-      <div className="flex min-w-0 min-h-0 flex-1 flex-col gap-1 overflow-hidden">
-        {/* Top row: Transport buttons + Identity */}
-        <div className="flex shrink-0 items-center gap-1.5">
-          {/* Transport buttons */}
-          <div className="flex shrink-0 items-center gap-1">
+      {/* Left column: Top row (identity + buttons), Middle row (file + time), Bottom row (waveform) */}
+      <div className="flex min-w-0 min-h-0 flex-1 flex-col justify-between pt-1.5">
+        {/* Top row: Identity + transport buttons */}
+        <div className="flex shrink-0 items-center justify-between">
+          <div className="flex min-w-0 items-baseline gap-1">
+            <span className="w-6 shrink-0 text-right font-mono text-[11px] tabular-nums text-[#8AADF4]">
+              {cue.number}
+            </span>
+            <span className="truncate font-sans text-[12px] font-medium text-[#EEF2FF]">
+              {cue.name}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-0.5">
+            <CueButton
+              icon={<SkipBack className="h-3 w-3" />}
+              label="Back to Start"
+              onClick={() => setProgress(0)}
+            />
             <CueButton
               icon={paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
               label={paused ? "Resume" : "Pause"}
@@ -277,44 +280,37 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
               danger
             />
           </div>
+        </div>
 
-          {/* Identity: number + name on top line; file + remaining time on same second line */}
-          <div className="flex min-w-0 flex-col leading-tight">
-            <div className="flex items-baseline gap-1">
-              <span className="shrink-0 font-mono text-[11px] tabular-nums text-[#8AADF4]">
-                {cue.number}
-              </span>
-              <span className="truncate font-sans text-[12px] font-medium text-[#EEF2FF]">
-                {cue.name}
-              </span>
-            </div>
-            {/* file and remaining time share one line — file truncates, time is fixed-width */}
-            <div className="flex w-full items-baseline gap-1">
-              <span className="min-w-0 flex-1 truncate font-mono text-[10px] text-[#6E738D]">
-                {cue.file}
-              </span>
-              <span className="shrink-0 font-mono text-[10px] tabular-nums text-[#A5ADCB]">
-                -{fmt(cue.remaining)}
-              </span>
-            </div>
-          </div>
+        {/* Middle row: File name and timing info */}
+        <div className="flex items-baseline gap-1">
+          <span className="w-6 shrink-0" />
+          <span className="min-w-0 flex-1 truncate font-mono text-[9px] text-[#6E738D]">
+            {cue.file}
+          </span>
+          <span className="shrink-0 font-mono text-[9px] tabular-nums text-[#A5ADCB]">
+            {fmt(cue.duration)} -{fmt(cue.remaining)}
+          </span>
         </div>
 
         {/* Bottom row: Waveform progress */}
-        <WaveformProgress
-          progress={progress}
-          accentColor={accentColor}
-          onChange={setProgress}
-          label={`Scrub ${cue.name}`}
-          height={20}
-          barCount={32}
-        />
+        <div className="flex w-full items-end">
+          <WaveformProgress
+            progress={progress}
+            accentColor={accentColor}
+            onChange={setProgress}
+            label={`Scrub ${cue.name}`}
+            height={20}
+            barWidth={3}
+            barGap={2}
+          />
+        </div>
       </div>
 
       {/* Right column: Vertical stereo meters — full row height */}
-      <div className="flex shrink-0 items-stretch gap-px">
-        <VerticalLEDMeter level={cue.level} count={12} width="w-1.5" />
-        <VerticalLEDMeter level={cue.level * 0.9} count={12} width="w-1.5" />
+      <div className="flex shrink-0 items-center self-center gap-px">
+        <VerticalLEDMeter level={cue.level} count={10} width="w-1.5" />
+        <VerticalLEDMeter level={cue.level * 0.9} count={10} width="w-1.5" />
       </div>
     </div>
   )
@@ -324,13 +320,13 @@ export function RuntimeSidebar() {
   const [gain, setGain] = useState(88)
   const [globalPaused, setGlobalPaused] = useState(false)
   const [globalFade, setGlobalFade] = useState<FadeState>("none")
+  const [deviceOk, setDeviceOk] = useState(true)
 
   return (
     <aside className="flex w-80 shrink-0 flex-col bg-[#1E2030]">
       {/* Header */}
       <div className="flex shrink-0 items-center gap-2 border-b border-[#363A4F] px-3 py-2">
         <span className="font-sans text-[13px] font-semibold text-[#CAD3F5]">Active Cues</span>
-        <span className="font-mono text-[10px] text-[#A5ADCB]">• Audio Interface 1</span>
         <span className="ml-auto rounded-sm bg-[#A6DA95]/15 px-1.5 py-0.5 font-mono text-[10px] text-[#A6DA95]">
           {ACTIVE_CUES.length} running
         </span>
@@ -342,6 +338,7 @@ export function RuntimeSidebar() {
         <div className="flex flex-1 flex-col gap-2">
           {/* Transport buttons */}
           <div className="flex items-center gap-1">
+            <GlobalButton icon={<SkipBack className="h-3.5 w-3.5" />} label="Restart All" />
             <GlobalButton
               icon={
                 globalPaused
@@ -352,7 +349,6 @@ export function RuntimeSidebar() {
               active={globalPaused}
               onClick={() => setGlobalPaused((p) => !p)}
             />
-            <GlobalButton icon={<SkipBack className="h-3.5 w-3.5" />} label="Restart" />
             <GlobalButton
               icon={
                 <FadeIcon
@@ -364,6 +360,7 @@ export function RuntimeSidebar() {
               active={globalFade !== "none"}
               onClick={() => setGlobalFade((f) => (f === "out" ? "in" : "out"))}
             />
+            <GlobalButton icon={<X className="h-3.5 w-3.5" />} label="Kill All" danger />
           </div>
 
           {/* Master gain slider */}
@@ -387,6 +384,23 @@ export function RuntimeSidebar() {
               {gain === 0 ? "-∞" : `${((gain / 100) * 24 - 24).toFixed(1)}`} dB
             </span>
           </div>
+
+          {/* Device status chip */}
+          <button
+            type="button"
+            onClick={() => setDeviceOk((v) => !v)}
+            title="Select audio device"
+            className="flex w-full items-center gap-2 rounded-full border border-[#363A4F] bg-[#11121C] px-3 py-1 text-left outline-none transition-colors hover:bg-[#181926] focus:ring-2 focus:ring-[#8AADF4]"
+          >
+            <span
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: deviceOk ? "#A6DA95" : "#EED49F" }}
+            />
+            <span className="font-mono text-[10px] text-[#A5ADCB]">Audio Interface 1</span>
+            <span className="ml-auto font-mono text-[10px] text-[#6E738D]">
+              {deviceOk ? "Operational" : "Error"}
+            </span>
+          </button>
         </div>
 
         {/* Master out vertical stereo meters — flush right */}

@@ -23,18 +23,18 @@ function IconButton({
       type="button"
       aria-label={label}
       title={label}
-      className={`flex h-4 w-5 items-center justify-center rounded-sm border border-[#363A4F] bg-[#11121C] outline-none hover:bg-[#181926] focus:ring-2 focus:ring-[#8AADF4] ${
+      className={`flex h-6 w-6 items-center justify-center rounded-sm border border-[#363A4F] bg-[#11121C] outline-none hover:bg-[#181926] focus:ring-2 focus:ring-[#8AADF4] ${
         active ? "text-[#CAD3F5]" : "text-[#A5ADCB]"
       }`}
     >
-      <Icon className="h-3 w-3" />
+      <Icon className="h-3.5 w-3.5" />
     </button>
   )
 }
 
 export function StatusBar({ selectedCount }: { selectedCount: number }) {
   return (
-    <footer className="flex h-6 shrink-0 items-center gap-4 bg-[#1E2030] px-3 text-[11px] text-[#B8C0E0]">
+    <footer className="flex h-8 shrink-0 items-center gap-4 bg-[#1E2030] px-3 text-[11px] text-[#B8C0E0]">
       <div className="flex items-center gap-1.5">
         <Clock className="h-3 w-3" />
         <span className="font-mono tabular-nums text-[#CAD3F5]">

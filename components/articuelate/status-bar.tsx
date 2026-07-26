@@ -34,15 +34,15 @@ function IconButton({
 
 export function StatusBar({ selectedCount }: { selectedCount: number }) {
   return (
-    <footer className="flex h-status-bar shrink-0 items-center gap-4 bg-surface px-md text-mono-sm text-text-secondary">
-      <div className="flex items-center gap-1.5">
+    <footer className="flex h-status-bar shrink-0 items-center gap-lg bg-surface px-md text-mono-sm text-text-secondary">
+      <div className="flex items-center gap-sm">
         <Clock className="h-icon-sm w-icon-sm" />
         <span className="font-mono tabular-nums text-text-primary">
           Show 00:14:22
         </span>
       </div>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-sm">
         <MousePointerClick className="h-icon-sm w-icon-sm" />
         <span className="font-mono tabular-nums">
           {selectedCount} selected
@@ -51,9 +51,9 @@ export function StatusBar({ selectedCount }: { selectedCount: number }) {
 
       <span className="font-mono tabular-nums text-text-disabled">6 cues</span>
 
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-md">
         {/* Global app actions, moved down from the toolbar */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-sm">
           <IconButton icon={Save} label="Save workspace" />
           <IconButton icon={Settings} label="Settings" />
         </div>
@@ -61,7 +61,7 @@ export function StatusBar({ selectedCount }: { selectedCount: number }) {
         <div className="divider-vert h-3" />
 
         {/* Layout panel toggles */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-sm">
           <span className="text-text-disabled">Layout</span>
           <IconButton icon={Columns2} label="Columns layout" active />
           <IconButton icon={Rows2} label="Rows layout" />

@@ -39,10 +39,10 @@
 
   /* Panel Structural Dimensions */
   --spacing-sidebar-width: 320px;
-  --spacing-detail-height: 240px;
-  --spacing-active-card-height: 72px;
-  --spacing-btn-go-width: 100px;
-  --spacing-btn-panic-width: 100px;
+  --spacing-detail-height: 256px;
+  --spacing-active-card-height: 80px;
+  --spacing-btn-go-width: 96px;
+  --spacing-btn-panic-width: 96px;
   --spacing-textarea-height: 64px;
 
   /* Radii */
@@ -550,29 +550,6 @@
     color: var(--color-status-error);
   }
   .btn-global-danger:hover { background-color: color-mix(in srgb, var(--color-status-error) 15%, transparent); }
-
-  /* ──────────────────────────────────────────────
-     Per-Cue Transport Buttons
-     ────────────────────────────────────────────── */
-  .btn-cue-transport {
-    display: flex; align-items: center; justify-content: center;
-    height: var(--spacing-xl); width: var(--spacing-xl);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-element-border);
-    background-color: var(--color-element);
-    outline: none;
-    transition: background-color 75ms, color 75ms, border-color 75ms;
-  }
-  .btn-cue-transport:focus-visible { box-shadow: 0 0 0 2px var(--color-border-focus); }
-  .btn-cue-transport-default { color: var(--color-text-secondary); }
-  .btn-cue-transport-default:hover { background-color: var(--color-surface-raised); color: var(--color-text-primary); }
-  .btn-cue-transport-danger { color: var(--color-status-error); }
-  .btn-cue-transport-danger:hover { background-color: color-mix(in srgb, var(--color-status-error) 15%, transparent); }
-  .btn-cue-transport-active {
-    border-color: var(--color-status-playhead);
-    background-color: color-mix(in srgb, var(--color-status-playhead) 15%, transparent);
-    color: var(--color-status-playhead);
-  }
 
   /* ──────────────────────────────────────────────
      Device Status Chip

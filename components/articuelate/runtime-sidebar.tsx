@@ -181,9 +181,9 @@ function GlobalButton({
   danger?: boolean
   onClick?: () => void
 }) {
-  let cls = "btn-global"
-  if (danger) cls = "btn-global-danger"
-  else if (active) cls = "btn-global-active"
+  let cls = "btn-icon-sm"
+  if (danger) cls += " text-status-error hover:text-status-error"
+  else if (active) cls += " border-status-group bg-status-group/15 text-status-group"
 
   return (
     <button
@@ -211,9 +211,9 @@ function CueButton({
   danger?: boolean
   onClick?: () => void
 }) {
-  let cls = "btn-cue-transport-default"
-  if (danger) cls = "btn-cue-transport-danger"
-  else if (active) cls = "btn-cue-transport-active"
+  let cls = "btn-global"
+  if (danger) cls += " btn-global-danger"
+  else if (active) cls += " btn-global-active"
 
   return (
     <button
@@ -241,10 +241,10 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
       style={{ borderLeft: `3px solid ${stripe}` }}
     >
       {/* Left column: Top row (identity + buttons), Middle row (file + time), Bottom row (waveform) */}
-      <div className="flex min-w-0 min-h-0 flex-1 flex-col justify-between pt-1.5">
+      <div className="flex min-w-0 min-h-0 flex-1 flex-col justify-between pt-xs">
         {/* Top row: Identity + transport buttons */}
         <div className="flex shrink-0 items-center justify-between">
-          <div className="flex min-w-0 items-baseline gap-1">
+          <div className="flex min-w-0 items-baseline gap-xs">
             <span className="active-cue-number">
               {cue.number}
             </span>
@@ -252,7 +252,7 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
               {cue.name}
             </span>
           </div>
-          <div className="flex shrink-0 items-center gap-0.5">
+          <div className="flex shrink-0 items-center gap-xs">
             <CueButton
               icon={<SkipBack className="h-icon-sm w-icon-sm" />}
               label="Back to Start"
@@ -279,7 +279,7 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
         </div>
 
         {/* Middle row: File name and timing info */}
-        <div className="flex items-baseline gap-1">
+        <div className="flex items-baseline gap-xs">
           <span className="w-xl shrink-0" />
           <span className="min-w-0 flex-1 truncate font-mono text-mono-sm text-text-disabled">
             {cue.file}
@@ -321,7 +321,7 @@ export function RuntimeSidebar() {
   return (
     <aside className="sidebar-runtime">
       {/* Header */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-element-border px-md py-sm">
+      <div className="flex shrink-0 items-center gap-sm border-b border-element-border px-md py-sm">
         <span className="font-sans text-body font-semibold text-text-primary">Active Cues</span>
         <span className="badge-sm badge-running ml-auto">
           {ACTIVE_CUES.length} running
@@ -329,17 +329,17 @@ export function RuntimeSidebar() {
       </div>
 
       {/* Global controls — buttons + master gain + vertical stereo master meter */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-element-border px-md py-sm">
+      <div className="flex shrink-0 items-center gap-sm border-b border-element-border px-md py-sm">
         {/* Controls column */}
-        <div className="flex flex-1 flex-col gap-2">
+        <div className="flex flex-1 flex-col gap-sm">
           {/* Transport buttons */}
-          <div className="flex items-center gap-1">
-            <GlobalButton icon={<SkipBack className="h-icon-sm w-icon-sm" />} label="Restart All" />
+          <div className="flex items-center gap-xs">
+            <GlobalButton icon={<SkipBack className="h-icon-md w-icon-md" />} label="Restart All" />
             <GlobalButton
               icon={
                 globalPaused
-                  ? <Play className="h-icon-sm w-icon-sm" />
-                  : <Pause className="h-icon-sm w-icon-sm" />
+                  ? <Play className="h-icon-md w-icon-md" />
+                  : <Pause className="h-icon-md w-icon-md" />
               }
               label={globalPaused ? "Resume All" : "Pause All"}
               active={globalPaused}
@@ -349,18 +349,18 @@ export function RuntimeSidebar() {
               icon={
                 <FadeIcon
                   dir={globalFade === "out" ? "in" : "out"}
-                  className="h-icon-sm w-icon-sm"
+                  className="h-icon-md w-icon-md"
                 />
               }
               label={globalFade === "out" ? "Fade In" : "Fade Out"}
               active={globalFade !== "none"}
               onClick={() => setGlobalFade((f) => (f === "out" ? "in" : "out"))}
             />
-            <GlobalButton icon={<X className="h-icon-sm w-icon-sm" />} label="Kill All" danger />
+            <GlobalButton icon={<X className="h-icon-md w-icon-md" />} label="Kill All" danger />
           </div>
 
           {/* Master gain slider */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-sm">
             <span className="shrink-0 font-mono text-mono-sm uppercase tracking-wider text-text-disabled">
               Master
             </span>
@@ -400,14 +400,14 @@ export function RuntimeSidebar() {
         </div>
 
         {/* Master out vertical stereo meters — flush right */}
-        <div className="flex shrink-0 items-end gap-px self-stretch py-0.5">
+        <div className="flex shrink-0 items-end gap-px self-stretch py-xs">
           <VerticalLEDMeter level={0.72} count={12} width="w-2" />
           <VerticalLEDMeter level={0.66} count={12} width="w-2" />
         </div>
       </div>
 
       {/* Per-cue rows */}
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto p-sm">
+      <div className="flex min-h-0 flex-1 flex-col gap-sm overflow-y-auto p-sm">
         {ACTIVE_CUES.map((cue) => (
           <ActiveCueRow key={cue.id} cue={cue} />
         ))}

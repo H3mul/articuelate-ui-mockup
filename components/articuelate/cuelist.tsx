@@ -117,7 +117,7 @@ function CueRow({
 
       {/* Name · type icon */}
       <div
-        className="flex min-w-0 items-center gap-1.5"
+        className="flex min-w-0 items-center gap-sm"
         style={{ paddingLeft: cue.depth * 14 }}
       >
         <span className="text-text-disabled">

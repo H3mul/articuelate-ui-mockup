@@ -43,7 +43,7 @@ function ActionButton({
 
 export function Toolbar() {
   return (
-    <header className="flex shrink-0 flex-col gap-1 bg-surface p-sm">
+    <header className="flex shrink-0 flex-col gap-xs bg-surface p-sm">
       {/* Transport + double conductor, composed to a single vertical height */}
       <div className="flex items-stretch gap-sm">
         {/* Panic / GO stack — Panic aligns with the current-cue box (top),
@@ -66,7 +66,7 @@ export function Toolbar() {
         </div>
 
         {/* Double conductor: current (muted) over next (focus) */}
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <div className="flex min-w-0 flex-1 flex-col gap-xs">
           {/* Current cue — muted attention */}
           <div className="conductor-current">
             <span className="badge-sm badge-running">
@@ -109,7 +109,7 @@ export function Toolbar() {
         <ActionButton icon={SlidersHorizontal} label="Control" />
         <ActionButton icon={Radio} label="OSC" />
 
-        <div className="divider-vert mx-1 h-xl" />
+        <div className="divider-vert mx-xs h-xl" />
 
         <span className="label-mono-sm text-text-disabled">
           Selected
@@ -118,7 +118,7 @@ export function Toolbar() {
         <ActionButton icon={Copy} label="Duplicate" />
         <ActionButton icon={Trash2} label="Delete" tone="danger" />
 
-        <div className="ml-auto flex items-center gap-1.5 font-mono text-mono-sm text-text-disabled">
+        <div className="ml-auto flex items-center gap-sm font-mono text-mono-sm text-text-disabled">
           <Plus className="h-icon-sm w-icon-sm" />
           drag media to add cues
         </div>

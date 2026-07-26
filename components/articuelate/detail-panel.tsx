@@ -36,7 +36,7 @@ function TextField({
   className?: string
 }) {
   return (
-    <label className={`flex flex-col gap-1 ${className}`}>
+    <label className={`flex flex-col gap-xs ${className}`}>
       <FieldLabel>{label}</FieldLabel>
       <input
         type="text"
@@ -52,7 +52,7 @@ function VolumeSlider({ initial }: { initial: number }) {
   const [value, setValue] = useState(Math.round(initial * 100))
   const db = value === 0 ? "-∞" : `${((value / 100) * 24 - 24).toFixed(1)}`
   return (
-    <label className="flex flex-col gap-2">
+    <label className="flex flex-col gap-sm">
       <FieldLabel>Target Volume</FieldLabel>
       <input
         type="range"
@@ -75,9 +75,9 @@ function VolumeSlider({ initial }: { initial: number }) {
 
 function DurationField() {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-xs">
       <FieldLabel>Duration</FieldLabel>
-      <div className="flex items-baseline gap-2">
+      <div className="flex items-baseline gap-sm">
         <span className="font-mono text-body tabular-nums text-text-primary">
           00:45
         </span>
@@ -97,9 +97,9 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
     { key: "after", label: "After Cue" },
   ]
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-sm">
       <FieldLabel>Trigger Condition</FieldLabel>
-      <div className="flex gap-1">
+      <div className="flex gap-xs">
         <div className="flex overflow-hidden rounded-sm border border-element-border">
           {options.map((o) => {
             const active = mode === o.key
@@ -143,9 +143,9 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
 function ColorPicker({ initial }: { initial: CueColor }) {
   const [color, setColor] = useState<CueColor>(initial)
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-sm">
       <FieldLabel>Highlight</FieldLabel>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-xs.5">
         {COLOR_ORDER.map((c) => {
           const active = color === c
           return (
@@ -171,12 +171,12 @@ function ColorPicker({ initial }: { initial: CueColor }) {
 
 function GeneralTab({ cue }: { cue: Cue }) {
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-3 gap-xl">
       {/* Column 1: Identity */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-lg">
         <TextField label="Number" value={cue.number} mono />
         <TextField label="Name" value={cue.name} />
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-xs">
           <FieldLabel>Notes</FieldLabel>
           <textarea
             defaultValue={cue.notes}
@@ -186,14 +186,14 @@ function GeneralTab({ cue }: { cue: Cue }) {
       </div>
 
       {/* Column 2: Timing & Duration */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-lg">
         <TextField label="Pre-delay" value={cue.preWait} mono />
         <TextField label="Post-delay" value={cue.postWait} mono />
         <DurationField />
       </div>
 
       {/* Column 3: Trigger & Appearance */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-lg">
         <TriggerSelector initial={cue.triggerCondition} />
         <ColorPicker initial={cue.color} />
       </div>
@@ -207,18 +207,18 @@ function MusicTab({ cue }: { cue: Cue }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-lg">
       {/* Media file */}
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-xs">
         <FieldLabel>Media File</FieldLabel>
-        <div className="flex h-control-sm items-center gap-2 rounded-sm border border-element-border bg-element px-sm">
+        <div className="flex h-control-sm items-center gap-sm rounded-sm border border-element-border bg-element px-sm">
           <FileAudio className="h-icon-sm w-icon-sm shrink-0 text-status-playhead" />
           <span className="truncate font-mono text-mono-sm text-text-primary">
             {cue.mediaFile}
           </span>
           <button
             type="button"
-            className="ml-auto shrink-0 rounded-sm border border-element-border bg-element-hover px-sm py-0.5 font-sans text-mono-sm text-text-secondary outline-none hover:bg-surface-raised focus:ring-2 focus:ring-border-focus"
+            className="ml-auto shrink-0 rounded-sm border border-element-border bg-element-hover px-sm py-xs font-sans text-mono-sm text-text-secondary outline-none hover:bg-surface-raised focus:ring-2 focus:ring-border-focus"
           >
             Browse…
           </button>
@@ -229,7 +229,7 @@ function MusicTab({ cue }: { cue: Cue }) {
       <VolumeSlider initial={cue.volume} />
 
       {/* Fade times */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-md">
         <TextField label="Fade In" value="00:02" mono />
         <TextField label="Fade Out" value="00:03" mono />
       </div>
@@ -243,7 +243,7 @@ function OSCTab({ cue }: { cue: Cue }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-lg">
       <TextField label="OSC Task" value="/projector/power 1" />
       <TextField label="Host" value="10.0.0.42" />
       <TextField label="Port" value="3333" mono />
@@ -307,7 +307,7 @@ export function DetailPanel({ cue }: { cue: Cue | null }) {
         </div>
 
         {/* Title and cue info */}
-        <div className="flex items-center gap-3 border-l border-element-border px-md">
+        <div className="flex items-center gap-md border-l border-element-border px-md">
           <span className="font-sans text-body font-semibold text-text-primary">
             Cue Settings
           </span>

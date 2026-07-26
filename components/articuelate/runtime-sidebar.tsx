@@ -30,17 +30,17 @@ function VerticalLEDMeter({
     <div className={`flex ${width} flex-col-reverse items-center gap-px`}>
       {Array.from({ length: count }).map((_, i) => {
         const isLit = i < litCount
-        let color = "#A6DA95"
-        if (i >= Math.floor(count * 0.66)) color = "#EED49F"
-        if (i >= Math.floor(count * 0.83)) color = "#ED8796"
+        let color = "var(--color-status-running)"
+        if (i >= Math.floor(count * 0.66)) color = "var(--color-status-wait)"
+        if (i >= Math.floor(count * 0.83)) color = "var(--color-status-error)"
         return (
           <div
             key={i}
             className="h-1.5 w-1.5 rounded-full"
             style={{
-              backgroundColor: isLit ? color : "#11121C",
+              backgroundColor: isLit ? color : "var(--color-element)",
               opacity: isLit ? 1 : 0.25,
-              border: "1px solid #2A2D3E",
+              border: "1px solid var(--color-element-border)",
             }}
           />
         )
@@ -57,8 +57,8 @@ function VerticalLEDMeter({
  */
 function WaveformProgress({
   progress,
-  accentColor = "#8AADF4",
-  dimColor = "#363A4F",
+  accentColor = "var(--color-status-playhead)",
+  dimColor = "var(--color-element-border)",
   height = 28,
   barWidth = 4,
   barGap = 3,
@@ -181,19 +181,17 @@ function GlobalButton({
   danger?: boolean
   onClick?: () => void
 }) {
+  let cls = "btn-global"
+  if (danger) cls = "btn-global-danger"
+  else if (active) cls = "btn-global-active"
+
   return (
     <button
       type="button"
       onClick={onClick}
       title={label}
       aria-label={label}
-      className={`flex h-7 w-7 items-center justify-center rounded-sm border outline-none transition-colors focus:ring-2 focus:ring-[#8AADF4] ${
-        danger
-          ? "border-[#363A4F] bg-[#11121C] text-[#ED8796] hover:bg-[#ED8796]/15"
-          : active
-          ? "border-[#F5A97F] bg-[#F5A97F]/15 text-[#F5A97F]"
-          : "border-[#363A4F] bg-[#11121C] text-[#B8C0E0] hover:bg-[#181926] hover:text-[#CAD3F5]"
-      }`}
+      className={cls}
     >
       {icon}
     </button>
@@ -213,19 +211,17 @@ function CueButton({
   danger?: boolean
   onClick?: () => void
 }) {
+  let cls = "btn-cue-transport-default"
+  if (danger) cls = "btn-cue-transport-danger"
+  else if (active) cls = "btn-cue-transport-active"
+
   return (
     <button
       type="button"
       onClick={onClick}
       title={label}
       aria-label={label}
-      className={`flex h-6 w-6 items-center justify-center rounded-sm border outline-none transition-colors focus:ring-2 focus:ring-[#8AADF4] ${
-        danger
-          ? "border-[#363A4F] bg-[#11121C] text-[#ED8796] hover:bg-[#ED8796]/15"
-          : active
-          ? "border-[#8AADF4] bg-[#8AADF4]/15 text-[#8AADF4]"
-          : "border-[#363A4F] bg-[#11121C] text-[#B8C0E0] hover:bg-[#24273A] hover:text-[#CAD3F5]"
-      }`}
+      className={cls}
     >
       {icon}
     </button>
@@ -236,12 +232,12 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
   const [paused, setPaused] = useState(false)
   const [fade, setFade] = useState<FadeState>("none")
   const [progress, setProgress] = useState(cue.progress)
-  const stripe = cue.color !== "none" ? CUE_COLORS[cue.color] : "#6E738D"
-  const accentColor = cue.color !== "none" ? CUE_COLORS[cue.color] : "#8AADF4"
+  const stripe = cue.color !== "none" ? CUE_COLORS[cue.color] : CUE_COLORS.none
+  const accentColor = cue.color !== "none" ? CUE_COLORS[cue.color] : "var(--color-status-playhead)"
 
   return (
     <div
-      className="relative flex h-20 items-stretch gap-1.5 rounded-sm border border-[#363A4F] bg-[#181926] px-2"
+      className="active-cue-row"
       style={{ borderLeft: `3px solid ${stripe}` }}
     >
       {/* Left column: Top row (identity + buttons), Middle row (file + time), Bottom row (waveform) */}
@@ -249,33 +245,33 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
         {/* Top row: Identity + transport buttons */}
         <div className="flex shrink-0 items-center justify-between">
           <div className="flex min-w-0 items-baseline gap-1">
-            <span className="w-6 shrink-0 text-right font-mono text-[11px] tabular-nums text-[#8AADF4]">
+            <span className="active-cue-number">
               {cue.number}
             </span>
-            <span className="truncate font-sans text-[12px] font-medium text-[#EEF2FF]">
+            <span className="active-cue-name">
               {cue.name}
             </span>
           </div>
           <div className="flex shrink-0 items-center gap-0.5">
             <CueButton
-              icon={<SkipBack className="h-3 w-3" />}
+              icon={<SkipBack className="h-icon-sm w-icon-sm" />}
               label="Back to Start"
               onClick={() => setProgress(0)}
             />
             <CueButton
-              icon={paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
+              icon={paused ? <Play className="h-icon-sm w-icon-sm" /> : <Pause className="h-icon-sm w-icon-sm" />}
               label={paused ? "Resume" : "Pause"}
               active={paused}
               onClick={() => setPaused((p) => !p)}
             />
             <CueButton
-              icon={<FadeIcon dir={fade === "out" ? "in" : "out"} className="h-3 w-3" />}
+              icon={<FadeIcon dir={fade === "out" ? "in" : "out"} className="h-icon-sm w-icon-sm" />}
               label={fade === "out" ? "Fade In" : "Fade Out"}
               active={fade !== "none"}
               onClick={() => setFade((f) => (f === "out" ? "in" : "out"))}
             />
             <CueButton
-              icon={<X className="h-3 w-3" />}
+              icon={<X className="h-icon-sm w-icon-sm" />}
               label={`Stop ${cue.name}`}
               danger
             />
@@ -284,11 +280,11 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
 
         {/* Middle row: File name and timing info */}
         <div className="flex items-baseline gap-1">
-          <span className="w-6 shrink-0" />
-          <span className="min-w-0 flex-1 truncate font-mono text-[9px] text-[#6E738D]">
+          <span className="w-xl shrink-0" />
+          <span className="min-w-0 flex-1 truncate font-mono text-mono-sm text-text-disabled">
             {cue.file}
           </span>
-          <span className="shrink-0 font-mono text-[9px] tabular-nums text-[#A5ADCB]">
+          <span className="shrink-0 font-mono text-mono-sm tabular-nums text-text-disabled">
             {fmt(cue.duration)} -{fmt(cue.remaining)}
           </span>
         </div>
@@ -323,27 +319,27 @@ export function RuntimeSidebar() {
   const [deviceOk, setDeviceOk] = useState(true)
 
   return (
-    <aside className="flex w-80 shrink-0 flex-col bg-[#1E2030]">
+    <aside className="sidebar-runtime">
       {/* Header */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-[#363A4F] px-3 py-2">
-        <span className="font-sans text-[13px] font-semibold text-[#CAD3F5]">Active Cues</span>
-        <span className="ml-auto rounded-sm bg-[#A6DA95]/15 px-1.5 py-0.5 font-mono text-[10px] text-[#A6DA95]">
+      <div className="flex shrink-0 items-center gap-2 border-b border-element-border px-md py-sm">
+        <span className="font-sans text-body font-semibold text-text-primary">Active Cues</span>
+        <span className="badge-sm badge-running ml-auto">
           {ACTIVE_CUES.length} running
         </span>
       </div>
 
       {/* Global controls — buttons + master gain + vertical stereo master meter */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-[#363A4F] px-3 py-2">
+      <div className="flex shrink-0 items-center gap-2 border-b border-element-border px-md py-sm">
         {/* Controls column */}
         <div className="flex flex-1 flex-col gap-2">
           {/* Transport buttons */}
           <div className="flex items-center gap-1">
-            <GlobalButton icon={<SkipBack className="h-3.5 w-3.5" />} label="Restart All" />
+            <GlobalButton icon={<SkipBack className="h-icon-sm w-icon-sm" />} label="Restart All" />
             <GlobalButton
               icon={
                 globalPaused
-                  ? <Play className="h-3.5 w-3.5" />
-                  : <Pause className="h-3.5 w-3.5" />
+                  ? <Play className="h-icon-sm w-icon-sm" />
+                  : <Pause className="h-icon-sm w-icon-sm" />
               }
               label={globalPaused ? "Resume All" : "Pause All"}
               active={globalPaused}
@@ -353,19 +349,19 @@ export function RuntimeSidebar() {
               icon={
                 <FadeIcon
                   dir={globalFade === "out" ? "in" : "out"}
-                  className="h-3.5 w-3.5"
+                  className="h-icon-sm w-icon-sm"
                 />
               }
               label={globalFade === "out" ? "Fade In" : "Fade Out"}
               active={globalFade !== "none"}
               onClick={() => setGlobalFade((f) => (f === "out" ? "in" : "out"))}
             />
-            <GlobalButton icon={<X className="h-3.5 w-3.5" />} label="Kill All" danger />
+            <GlobalButton icon={<X className="h-icon-sm w-icon-sm" />} label="Kill All" danger />
           </div>
 
           {/* Master gain slider */}
           <div className="flex items-center gap-2">
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-[#A5ADCB]">
+            <span className="shrink-0 font-mono text-mono-sm uppercase tracking-wider text-text-disabled">
               Master
             </span>
             <input
@@ -375,12 +371,12 @@ export function RuntimeSidebar() {
               value={gain}
               onChange={(e) => setGain(Number(e.target.value))}
               aria-label="Master gain"
-              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full accent-[#F5A97F] outline-none focus:ring-2 focus:ring-[#F5A97F]"
+              className="slider-peach h-1.5 flex-1"
               style={{
-                background: `linear-gradient(to right, #F5A97F ${gain}%, #11121C ${gain}%)`,
+                background: `linear-gradient(to right, var(--color-status-group) ${gain}%, var(--color-element) ${gain}%)`,
               }}
             />
-            <span className="w-12 shrink-0 text-right font-mono text-[10px] tabular-nums text-[#B8C0E0]">
+            <span className="w-12 shrink-0 text-right font-mono text-mono-sm tabular-nums text-text-secondary">
               {gain === 0 ? "-∞" : `${((gain / 100) * 24 - 24).toFixed(1)}`} dB
             </span>
           </div>
@@ -390,14 +386,14 @@ export function RuntimeSidebar() {
             type="button"
             onClick={() => setDeviceOk((v) => !v)}
             title="Select audio device"
-            className="flex w-full items-center gap-2 rounded-full border border-[#363A4F] bg-[#11121C] px-3 py-1 text-left outline-none transition-colors hover:bg-[#181926] focus:ring-2 focus:ring-[#8AADF4]"
+            className="device-chip"
           >
             <span
-              className="h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: deviceOk ? "#A6DA95" : "#EED49F" }}
+              className="device-dot"
+              style={{ backgroundColor: deviceOk ? "var(--color-status-running)" : "var(--color-status-wait)" }}
             />
-            <span className="font-mono text-[10px] text-[#A5ADCB]">Audio Interface 1</span>
-            <span className="ml-auto font-mono text-[10px] text-[#6E738D]">
+            <span className="font-mono text-mono-sm text-text-disabled">Audio Interface 1</span>
+            <span className="ml-auto font-mono text-mono-sm text-text-disabled">
               {deviceOk ? "Operational" : "Error"}
             </span>
           </button>
@@ -411,7 +407,7 @@ export function RuntimeSidebar() {
       </div>
 
       {/* Per-cue rows */}
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto p-2">
+      <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto p-sm">
         {ACTIVE_CUES.map((cue) => (
           <ActiveCueRow key={cue.id} cue={cue} />
         ))}

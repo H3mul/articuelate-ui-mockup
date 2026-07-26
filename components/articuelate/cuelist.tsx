@@ -18,7 +18,7 @@ function stripType(target: string): string {
 }
 
 function KindIcon({ kind }: { kind: CueKind }) {
-  const cls = "h-3.5 w-3.5 shrink-0"
+  const cls = "h-icon-sm w-icon-sm shrink-0"
   switch (kind) {
     case "group":
       return <Folder className={cls} />
@@ -51,27 +51,21 @@ function TimeCell({
   variant?: "plain" | "fill" | "outline"
   emphasize?: boolean
 }) {
-  const showBorder = variant === "fill" || variant === "outline"
-
   return (
     <div
-      className="relative flex h-5 items-center justify-end overflow-hidden rounded-[3px] px-1.5"
-      style={showBorder ? { border: "2px solid rgba(166, 218, 149, 0.3)" } : undefined}
+      className="time-cell"
+      style={variant === "fill" || variant === "outline" ? { border: "2px solid rgba(166, 218, 149, 0.3)" } : undefined}
     >
       {variant === "fill" && (
         <div
-          className="absolute inset-y-0 left-0 bg-[#A6DA95]/30"
+          className="time-cell-fill"
           style={{ width: `${Math.min(1, Math.max(0, fill)) * 100}%` }}
         />
       )}
       {variant === "outline" && (
-        <div className="absolute inset-0 rounded-[3px] border border-[#A6DA95]/70" />
+        <div className="time-cell-outline" />
       )}
-      <span
-        className={`relative font-mono text-[12px] tabular-nums ${
-          variant === "fill" || emphasize ? "text-[#EEF2FF]" : "text-[#A5ADCB]"
-        }`}
-      >
+      <span className={variant === "fill" || emphasize ? "time-cell-text-emphasis" : "time-cell-text-muted"}>
         {value}
       </span>
     </div>
@@ -93,34 +87,31 @@ function CueRow({
   const standby = cue.state === "standby"
   const stripe = cue.color !== "none" ? CUE_COLORS[cue.color] : undefined
 
-  let rowBg = zebra ? "bg-[#24273A]" : "bg-[#1E2030]"
-  if (running) rowBg = "bg-[#A6DA95]/10"
-  if (selected) rowBg = "bg-[#2F3C5E]"
-
-  const primaryText = selected ? "text-[#EEF2FF]" : "text-[#CAD3F5]"
-  const mutedText = "text-[#8087A2]"
+  let rowCls = "cue-row-grid"
+  if (selected) rowCls += " cue-row-selected"
+  else if (running) rowCls += " cue-row-running"
+  else if (zebra) rowCls += " bg-surface-raised"
+  else rowCls += " bg-surface"
 
   return (
     <button
       type="button"
       onClick={onSelect}
-      className={`group grid w-full grid-cols-[20px_46px_1fr_1fr_70px_70px_70px] items-center gap-1 border-b border-[#181926]/60 px-2 py-1 text-left text-[13px] outline-none focus:ring-1 focus:ring-inset focus:ring-[#8AADF4] ${rowBg}`}
+      className={rowCls}
       style={{ borderLeft: `3px solid ${stripe ?? "transparent"}` }}
     >
       {/* Playhead */}
       <div className="flex items-center justify-center">
         {standby && (
-          <Play className="h-3.5 w-3.5 fill-[#8AADF4] text-[#8AADF4]" strokeWidth={0} />
+          <Play className="h-icon-sm w-icon-sm fill-status-playhead text-status-playhead" strokeWidth={0} />
         )}
         {running && (
-          <Play className="h-3.5 w-3.5 fill-[#A6DA95] text-[#A6DA95]" strokeWidth={0} />
+          <Play className="h-icon-sm w-icon-sm fill-status-running text-status-running" strokeWidth={0} />
         )}
       </div>
 
       {/* Cue number */}
-      <div
-        className={`font-mono text-[12px] tabular-nums ${running ? "text-[#A6DA95]" : "text-[#B8C0E0]"}`}
-      >
+      <div className={`font-mono text-mono-sm tabular-nums ${running ? "text-status-running" : "text-text-secondary"}`}>
         {cue.number}
       </div>
 
@@ -129,16 +120,16 @@ function CueRow({
         className="flex min-w-0 items-center gap-1.5"
         style={{ paddingLeft: cue.depth * 14 }}
       >
-        <span className={mutedText}>
+        <span className="text-text-disabled">
           <KindIcon kind={cue.kind} />
         </span>
-        <span className={`shrink truncate font-sans font-medium ${primaryText}`}>
+        <span className={`shrink truncate font-sans font-medium ${selected ? "text-text-primary" : "text-text-primary"}`}>
           {cue.name}
         </span>
       </div>
 
       {/* Context / target — separate column for vertical alignment */}
-      <div className={`truncate font-mono text-[11px] ${mutedText}`}>
+      <div className="truncate font-mono text-mono-sm text-text-disabled">
         {stripType(cue.target)}
       </div>
 
@@ -175,9 +166,9 @@ export function Cuelist({
   onSelect: (id: string) => void
 }) {
   return (
-    <section className="flex min-h-0 flex-1 flex-col bg-[#1E2030]">
+    <section className="panel-surface flex min-h-0 flex-1 flex-col">
       {/* Header row */}
-      <div className="grid shrink-0 grid-cols-[20px_46px_1fr_1fr_70px_70px_70px] items-center gap-1 border-b border-[#363A4F] px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#B8C0E0]">
+      <div className="cuelist-header">
         <div />
         <div>Cue</div>
         <div>Name</div>

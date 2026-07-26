@@ -24,43 +24,43 @@ function ActionButton({
   tone?: "default" | "danger"
   onClick?: () => void
 }) {
-  const toneCls =
-    tone === "danger"
-      ? "text-[#ED8796] hover:text-[#ED8796]"
-      : "text-[#B8C0E0] hover:text-[#CAD3F5]"
   return (
     <button
       type="button"
       onClick={onClick}
       title={label}
       aria-label={label}
-      className={`flex h-8 w-8 items-center justify-center rounded-sm border border-[#363A4F] bg-[#11121C] outline-none transition-colors hover:bg-[#181926] active:bg-[#090A0F] focus:ring-2 focus:ring-[#8AADF4] ${toneCls}`}
+      className={`btn-icon-sm outline-none focus:ring-2 focus:ring-border-focus ${
+        tone === "danger"
+          ? "text-status-error hover:text-status-error"
+          : "text-text-secondary hover:text-text-primary"
+      }`}
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="h-icon-md w-icon-md" />
     </button>
   )
 }
 
 export function Toolbar() {
   return (
-    <header className="flex shrink-0 flex-col gap-1 bg-[#1E2030] p-2">
+    <header className="flex shrink-0 flex-col gap-1 bg-surface p-sm">
       {/* Transport + double conductor, composed to a single vertical height */}
-      <div className="flex items-stretch gap-2">
+      <div className="flex items-stretch gap-sm">
         {/* Panic / GO stack — Panic aligns with the current-cue box (top),
             GO grows to align with the taller next-cue box (bottom). */}
-        <div className="flex shrink-0 flex-col gap-1">
+        <div className="transport-group">
           <button
             type="button"
-            className="flex h-7 w-24 shrink-0 items-center justify-center gap-1.5 rounded-sm border border-[#363A4F] bg-[#11121C] font-sans text-[12px] font-semibold tracking-wide text-[#ED8796] outline-none transition-colors hover:bg-[#181926] active:bg-[#090A0F] focus:ring-2 focus:ring-[#ED8796]"
+            className="btn-panic"
           >
-            <Octagon className="h-3.5 w-3.5" />
+            <Octagon className="h-icon-sm w-icon-sm" />
             Panic
           </button>
           <button
             type="button"
-            className="flex w-24 flex-1 items-center justify-center gap-2 rounded-sm border border-[#494F6A] bg-[#11121C] font-sans text-base font-bold tracking-widest text-[#A6DA95] outline-none transition-colors hover:bg-[#181926] active:bg-[#090A0F] focus:ring-2 focus:ring-[#A6DA95]"
+            className="btn-go"
           >
-            <Play className="h-4 w-4 fill-current" strokeWidth={0} />
+            <Play className="h-icon-md w-icon-md fill-current" strokeWidth={0} />
             GO
           </button>
         </div>
@@ -68,31 +68,31 @@ export function Toolbar() {
         {/* Double conductor: current (muted) over next (focus) */}
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           {/* Current cue — muted attention */}
-          <div className="flex h-7 items-center gap-2 rounded-sm border border-[#363A4F] bg-[#181926] px-3">
-            <span className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-wider text-[#6E738D]">
+          <div className="conductor-current">
+            <span className="badge-sm badge-running">
               Playing
             </span>
-            <span className="shrink-0 font-mono text-[12px] tabular-nums text-[#A5ADCB]">
+            <span className="shrink-0 font-mono text-mono-sm tabular-nums text-text-disabled">
               {CURRENT_CUE.number}
             </span>
-            <span className="truncate font-sans text-[13px] text-[#A5ADCB]">
+            <span className="truncate font-sans text-body text-text-disabled">
               {CURRENT_CUE.name}
             </span>
           </div>
 
           {/* Next cue — the focus */}
-          <div className="flex min-w-0 flex-1 items-center gap-3 rounded-sm border border-[#494F6A] bg-[#11121C] px-3 py-1.5">
-            <span className="shrink-0 rounded-sm bg-[#8AADF4]/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-[#8AADF4]">
+          <div className="conductor-next">
+            <span className="badge-sm badge-next">
               Next
             </span>
-            <span className="shrink-0 font-mono text-[15px] font-semibold tabular-nums text-[#EEF2FF]">
+            <span className="shrink-0 font-mono text-heading font-semibold tabular-nums text-text-primary">
               {NEXT_CUE.number}
             </span>
             <div className="flex min-w-0 flex-col leading-tight">
-              <span className="truncate font-sans text-[15px] font-semibold text-[#EEF2FF]">
+              <span className="truncate font-sans text-heading font-semibold text-text-primary">
                 {NEXT_CUE.name}
               </span>
-              <span className="truncate font-sans text-[12px] italic text-[#A5ADCB]">
+              <span className="truncate font-sans text-mono-sm italic text-text-disabled">
                 {NEXT_CUE.notes}
               </span>
             </div>
@@ -101,25 +101,25 @@ export function Toolbar() {
       </div>
 
       {/* Cuelist action toolbar */}
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#6E738D]">
+      <div className="action-toolbar">
+        <span className="label-mono-sm text-text-disabled">
           Add
         </span>
         <ActionButton icon={Music} label="Music" />
         <ActionButton icon={SlidersHorizontal} label="Control" />
         <ActionButton icon={Radio} label="OSC" />
 
-        <div className="mx-1 h-6 w-px bg-[#363A4F]" />
+        <div className="divider-vert mx-1 h-xl" />
 
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#6E738D]">
+        <span className="label-mono-sm text-text-disabled">
           Selected
         </span>
         <ActionButton icon={Pencil} label="Edit" />
         <ActionButton icon={Copy} label="Duplicate" />
         <ActionButton icon={Trash2} label="Delete" tone="danger" />
 
-        <div className="ml-auto flex items-center gap-1.5 font-mono text-[11px] text-[#6E738D]">
-          <Plus className="h-3 w-3" />
+        <div className="ml-auto flex items-center gap-1.5 font-mono text-mono-sm text-text-disabled">
+          <Plus className="h-icon-sm w-icon-sm" />
           drag media to add cues
         </div>
       </div>

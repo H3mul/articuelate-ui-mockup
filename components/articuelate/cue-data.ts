@@ -39,12 +39,12 @@ export interface Cue {
 
 /** Highlight colors — the QLab-style swatch set. */
 export const CUE_COLORS: Record<CueColor, string> = {
-  none: "#6E738D",
-  red: "#ED8796",
-  orange: "#F5A97F",
-  green: "#A6DA95",
-  blue: "#8AADF4",
-  purple: "#C6A0F6",
+  none: "var(--color-text-disabled)",
+  red: "var(--color-status-error)",
+  orange: "var(--color-status-group)",
+  green: "var(--color-status-running)",
+  blue: "var(--color-status-playhead)",
+  purple: "var(--color-status-standby)",
 }
 
 export const CUES: Cue[] = [

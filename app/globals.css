@@ -1,165 +1,614 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Typography */
+  --font-sans: "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --font-size-mono-sm: 11px;
+  --font-size-mono-sm--line-height: 14px;
+  --font-size-mono-xl: 24px;
+  --font-size-mono-xl--line-height: 30px;
+  --font-size-body: 13px;
+  --font-size-body--line-height: 18px;
+  --font-size-heading: 15px;
+  --font-size-heading--line-height: 20px;
+
+  /* Spacing Scale */
+  --spacing-px: 1px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+
+  /* UI Component Dimensions */
+  --spacing-cue-row: 24px;
+  --spacing-status-bar: 24px;
+  --spacing-toolbar: 36px;
+  --spacing-control-sm: 28px;
+  --spacing-control-md: 32px;
+  --spacing-time-cell: 20px;
+  --spacing-col-playhead: 20px;
+  --spacing-col-cue-number: 46px;
+  --spacing-col-time: 70px;
+  --spacing-min-panel: 225px;
+  --spacing-icon-sm: 14px;
+  --spacing-icon-md: 18px;
+
+  /* Panel Structural Dimensions */
+  --spacing-sidebar-width: 320px;
+  --spacing-detail-height: 240px;
+  --spacing-active-card-height: 72px;
+  --spacing-btn-go-width: 100px;
+  --spacing-btn-panic-width: 100px;
+  --spacing-textarea-height: 64px;
+
+  /* Radii */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-full: 9999px;
+
+  /* Catppuccin Macchiato Theme Tokens */
+  --color-app-bg: #181926;
+  --color-surface: #1E2030;
+  --color-surface-raised: #24273A;
+  --color-surface-overlay: #363A4F;
+  --color-element: #11121C;
+  --color-element-border: #363A4F;
+  --color-element-hover: #181926;
+  --color-element-active: #090A0F;
+  --color-selection: #2F3C5E;
+  --color-selection-active: #405382;
+  --color-text-primary: #CAD3F5;
+  --color-text-secondary: #B8C0E0;
+  --color-text-disabled: #A5ADCB;
+  --color-status-playhead: #8AADF4;
+  --color-status-running: #A6DA95;
+  --color-status-wait: #EED49F;
+  --color-status-error: #ED8796;
+  --color-status-standby: #C6A0F6;
+  --color-status-group: #F5A97F;
+  --color-border-subtle: #181926;
+  --color-border-divider: #363A4F;
+  --color-border-emphasized: #494F6A;
+  --color-border-focus: #8AADF4;
 }
 
 :root {
-  color-scheme: light;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
   color-scheme: dark;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    color-scheme: dark;
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
+  background-color: var(--color-app-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-element-border);
+    box-sizing: border-box;
   }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-app-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    user-select: none;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--color-border-focus);
+  }
+}
+
+@layer utilities {
+  /* Unified focus ring for all interactables */
+  .focus-ring {
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--color-border-focus), 0 0 0 4px var(--color-app-bg);
+    }
+  }
+}
+
+@layer components {
+  /* ──────────────────────────────────────────────
+     Panels & Environment
+     ────────────────────────────────────────────── */
+  .panel-surface {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+  }
+
+  .sidebar-runtime {
+    width: var(--spacing-sidebar-width);
+    flex-shrink: 0;
+    background-color: var(--color-surface);
+  }
+
+  .detail-panel {
+    display: flex;
+    height: var(--spacing-detail-height);
+    flex-shrink: 0;
+    background-color: var(--color-surface);
+  }
+
+  .transport-group {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 4px;
+  }
+
+  .action-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .divider-vert {
+    width: 1px;
+    background-color: var(--color-element-border);
+  }
+
+  /* ──────────────────────────────────────────────
+     The Zed Punch-Down Button
+     ────────────────────────────────────────────── */
+  .btn-punch-down {
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--color-element);
+    border: 1px solid var(--color-element-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    transition: background-color 75ms, border-color 75ms;
+    cursor: default;
+  }
+  .btn-punch-down:hover { background-color: var(--color-element-hover); }
+  .btn-punch-down:active {
+    background-color: var(--color-element-active);
+    border-color: var(--color-border-focus);
+  }
+
+  /* ──────────────────────────────────────────────
+     Icon Buttons
+     ────────────────────────────────────────────── */
+  .btn-icon-sm {
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--color-element);
+    border: 1px solid var(--color-element-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    transition: background-color 75ms, border-color 75ms, color 75ms;
+    cursor: default;
+    height: var(--spacing-control-md); width: var(--spacing-control-md);
+    padding: var(--spacing-xs);
+  }
+  .btn-icon-sm:hover { color: var(--color-text-primary); background-color: var(--color-element-hover); }
+  .btn-icon-sm:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+
+  .btn-icon-xs {
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--color-element);
+    border: 1px solid var(--color-element-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    transition: background-color 75ms, border-color 75ms, color 75ms;
+    cursor: default;
+    height: var(--spacing-xl); width: var(--spacing-xl);
+    padding: var(--spacing-xs);
+  }
+  .btn-icon-xs:hover { color: var(--color-text-primary); background-color: var(--color-element-hover); }
+  .btn-icon-xs:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+
+  /* ──────────────────────────────────────────────
+     Primary Transport Triggers
+     ────────────────────────────────────────────── */
+  .btn-panic {
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--color-element);
+    border: 1px solid var(--color-element-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-status-error);
+    transition: background-color 75ms, border-color 75ms;
+    cursor: default;
+    height: var(--spacing-control-sm);
+    width: var(--spacing-btn-panic-width);
+    font-weight: 600;
+    font-size: 12px;
+    gap: 6px;
+  }
+  .btn-panic:hover { background-color: var(--color-element-hover); }
+  .btn-panic:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+
+  .btn-go {
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--color-element);
+    border: 1px solid var(--color-border-emphasized);
+    border-radius: var(--radius-sm);
+    color: var(--color-status-running);
+    transition: background-color 75ms, border-color 75ms;
+    cursor: default;
+    width: var(--spacing-btn-go-width);
+    flex: 1;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    gap: 8px;
+  }
+  .btn-go:hover { background-color: var(--color-element-hover); }
+  .btn-go:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+
+  /* ──────────────────────────────────────────────
+     Conductor Panel
+     ────────────────────────────────────────────── */
+  .conductor-current {
+    display: flex; align-items: center;
+    height: var(--spacing-control-sm);
+    gap: 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element-hover);
+    padding: 0 var(--spacing-md);
+  }
+
+  .conductor-next {
+    display: flex; align-items: center;
+    min-width: 0; flex: 1;
+    gap: 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-emphasized);
+    background-color: var(--color-element);
+    padding: 6px var(--spacing-md);
+  }
+
+  /* ──────────────────────────────────────────────
+     Labels & Form Elements
+     ────────────────────────────────────────────── */
+  .label-mono-sm {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-mono-sm);
+    color: var(--color-text-secondary);
+    letter-spacing: -0.01em;
+  }
+
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-mono-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-disabled);
+  }
+
+  /* Standard Input (Inspector panel textboxes, time fields) */
+  .input-md {
+    height: var(--spacing-control-sm);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    padding: 0 var(--spacing-sm);
+    background-color: var(--color-element);
+    border: 1px solid var(--color-element-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    outline: none;
+  }
+  .input-md:focus {
+    box-shadow: 0 0 0 2px var(--color-border-focus);
+  }
+
+  /* Micro Inputs (Used inside table cells or compact grids) */
+  .input-xs {
+    height: 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 0 4px;
+    background-color: var(--color-element);
+    border: 1px solid var(--color-element-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    outline: none;
+  }
+  .input-xs:focus {
+    box-shadow: 0 0 0 2px var(--color-border-focus);
+  }
+
+  .field-textarea {
+    height: var(--spacing-textarea-height);
+    resize: none;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element);
+    padding: 6px var(--spacing-sm);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    color: var(--color-text-primary);
+    outline: none;
+  }
+  .field-textarea:focus {
+    box-shadow: 0 0 0 2px var(--color-border-focus);
+  }
+
+  .inspector-section-header {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-disabled);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  /* ──────────────────────────────────────────────
+     Tabs
+     ────────────────────────────────────────────── */
+  .tab-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    outline: none;
+    transition: background-color 75ms, color 75ms;
+  }
+  .tab-btn:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--color-border-focus);
+  }
+  .tab-btn-active {
+    background-color: var(--color-selection);
+    color: var(--color-text-primary);
+  }
+  .tab-btn-inactive {
+    background-color: var(--color-element);
+    color: var(--color-text-disabled);
+  }
+  .tab-btn-inactive:hover {
+    background-color: var(--color-element-hover);
+    color: var(--color-text-primary);
+  }
+
+  /* ──────────────────────────────────────────────
+     Badges
+     ────────────────────────────────────────────── */
+  .badge-sm {
+    border-radius: var(--radius-sm);
+    padding: 2px var(--spacing-sm);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-mono-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-next {
+    background-color: color-mix(in srgb, var(--color-status-playhead) 15%, transparent);
+    color: var(--color-status-playhead);
+  }
+  .badge-running {
+    background-color: color-mix(in srgb, var(--color-status-running) 15%, transparent);
+    color: var(--color-status-running);
+  }
+
+  /* ──────────────────────────────────────────────
+     Cuelist Grid System
+     ────────────────────────────────────────────── */
+  .cuelist-header {
+    display: grid; width: 100%; align-items: center;
+    gap: 4px;
+    border-bottom: 1px solid var(--color-element-border);
+    padding: 6px var(--spacing-sm);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-mono-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    grid-template-columns: var(--spacing-col-playhead) var(--spacing-col-cue-number) 1fr 1fr var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-time);
+  }
+
+  .cue-row-grid {
+    display: grid; width: 100%; align-items: center;
+    gap: 4px;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border-subtle) 60%, transparent);
+    padding: 4px var(--spacing-sm);
+    font-size: var(--font-size-body);
+    outline: none;
+    grid-template-columns: var(--spacing-col-playhead) var(--spacing-col-cue-number) 1fr 1fr var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-time);
+  }
+  .cue-row-grid:focus-visible {
+    box-shadow: inset 0 0 0 1px var(--color-border-focus);
+  }
+  .cue-row-grid-even { background-color: var(--color-surface); }
+  .cue-row-grid-odd { background-color: var(--color-surface-raised); }
+
+  /* ──────────────────────────────────────────────
+     Cue Row State-Contrast Matrix
+     Priority order: base → disabled → group → error → standby → selected → running
+     ────────────────────────────────────────────── */
+  .cue-row-base {
+    transition: background-color 75ms;
+    position: relative;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border-divider) 40%, transparent);
+  }
+
+  .cue-row-disabled {
+    opacity: 0.45;
+  }
+
+  .cue-row-group {
+    border-left: 3px solid var(--color-status-group);
+  }
+
+  .cue-row-error {
+    background-color: color-mix(in srgb, var(--color-status-error) 12%, transparent) !important;
+  }
+
+  .cue-row-standby {
+    border-left: 3px solid var(--color-status-standby);
+  }
+
+  .cue-row-selected {
+    background-color: var(--color-selection) !important;
+    color: var(--color-text-primary);
+  }
+
+  .cue-row-running {
+    background-color: color-mix(in srgb, var(--color-status-running) 20%, transparent) !important;
+    color: var(--color-text-primary);
+  }
+
+  /* ──────────────────────────────────────────────
+     Time Cell (QLab-style progress fill)
+     ────────────────────────────────────────────── */
+  .time-cell {
+    position: relative; display: flex; align-items: center; justify-content: flex-end;
+    height: var(--spacing-time-cell);
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+  }
+  .time-cell-fill {
+    position: absolute; inset: 0; right: auto;
+    background-color: color-mix(in srgb, var(--color-status-running) 30%, transparent);
+  }
+  .time-cell-outline {
+    position: absolute; inset: 0;
+    border-radius: var(--radius-sm);
+    border: 1px solid color-mix(in srgb, var(--color-status-running) 70%, transparent);
+  }
+  .time-cell-text {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-mono-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .time-cell-text-emphasis {
+    color: var(--color-text-primary);
+  }
+  .time-cell-text-muted {
+    color: var(--color-text-disabled);
+  }
+
+  /* ──────────────────────────────────────────────
+     Active Cue Row (Runtime Sidebar)
+     ────────────────────────────────────────────── */
+  .active-cue-row {
+    position: relative; display: flex; align-items: stretch;
+    height: var(--spacing-active-card-height);
+    gap: 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element-hover);
+    padding: 0 var(--spacing-sm);
+  }
+
+  .active-cue-number {
+    width: var(--spacing-xl); flex-shrink: 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-mono-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-status-playhead);
+  }
+
+  .active-cue-name {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  /* ──────────────────────────────────────────────
+     Global Runtime Buttons
+     ────────────────────────────────────────────── */
+  .btn-global {
+    display: flex; align-items: center; justify-content: center;
+    height: var(--spacing-xl); width: var(--spacing-xl);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element);
+    color: var(--color-text-secondary);
+    outline: none;
+    transition: background-color 75ms, color 75ms, border-color 75ms;
+  }
+  .btn-global:hover { background-color: var(--color-element-hover); color: var(--color-text-primary); }
+  .btn-global:focus-visible { box-shadow: 0 0 0 2px var(--color-border-focus); }
+
+  .btn-global-active {
+    border: 1px solid var(--color-status-group);
+    background-color: color-mix(in srgb, var(--color-status-group) 15%, transparent);
+    color: var(--color-status-group);
+  }
+  .btn-global-active:hover { background-color: color-mix(in srgb, var(--color-status-group) 25%, transparent); }
+
+  .btn-global-danger {
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element);
+    color: var(--color-status-error);
+  }
+  .btn-global-danger:hover { background-color: color-mix(in srgb, var(--color-status-error) 15%, transparent); }
+
+  /* ──────────────────────────────────────────────
+     Per-Cue Transport Buttons
+     ────────────────────────────────────────────── */
+  .btn-cue-transport {
+    display: flex; align-items: center; justify-content: center;
+    height: var(--spacing-xl); width: var(--spacing-xl);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element);
+    outline: none;
+    transition: background-color 75ms, color 75ms, border-color 75ms;
+  }
+  .btn-cue-transport:focus-visible { box-shadow: 0 0 0 2px var(--color-border-focus); }
+  .btn-cue-transport-default { color: var(--color-text-secondary); }
+  .btn-cue-transport-default:hover { background-color: var(--color-surface-raised); color: var(--color-text-primary); }
+  .btn-cue-transport-danger { color: var(--color-status-error); }
+  .btn-cue-transport-danger:hover { background-color: color-mix(in srgb, var(--color-status-error) 15%, transparent); }
+  .btn-cue-transport-active {
+    border-color: var(--color-status-playhead);
+    background-color: color-mix(in srgb, var(--color-status-playhead) 15%, transparent);
+    color: var(--color-status-playhead);
+  }
+
+  /* ──────────────────────────────────────────────
+     Device Status Chip
+     ────────────────────────────────────────────── */
+  .device-chip {
+    display: flex; width: 100%; align-items: center;
+    gap: 8px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element);
+    padding: 4px var(--spacing-md);
+    text-align: left;
+    outline: none;
+    transition: background-color 75ms;
+  }
+  .device-chip:hover { background-color: var(--color-element-hover); }
+  .device-chip:focus-visible { box-shadow: 0 0 0 2px var(--color-border-focus); }
+
+  .device-dot {
+    height: 8px; width: 8px; flex-shrink: 0;
+    border-radius: var(--radius-full);
+  }
+
+  /* ──────────────────────────────────────────────
+     Range Sliders
+     ────────────────────────────────────────────── */
+  .slider-peach {
+    height: 6px; width: 100%;
+    cursor: pointer;
+    appearance: none;
+    border-radius: var(--radius-full);
+    background-color: var(--color-element);
+    outline: none;
+    accent-color: var(--color-status-group);
+  }
+  .slider-peach:focus-visible {
+    box-shadow: 0 0 0 2px var(--color-status-group);
   }
 }

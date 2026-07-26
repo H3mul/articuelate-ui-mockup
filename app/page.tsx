@@ -13,12 +13,12 @@ export default function Page() {
   const selectedCue = CUES.find((c) => c.id === selectedId) ?? null
 
   return (
-    <div className="flex h-screen flex-col gap-1 bg-[#181926] font-sans text-[#CAD3F5]">
+    <div className="flex h-screen flex-col gap-px bg-app-bg font-sans text-text-primary">
       {/* Main workspace: left column (toolbar + cuelist + detail) is truncated
           on the right by the full-height runtime sidebar. The 1px gutters let
           the app background show through so panels recede at their edges. */}
-      <main className="flex min-h-0 flex-1 gap-1">
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
+      <main className="flex min-h-0 flex-1 gap-px">
+        <div className="flex min-w-0 flex-1 flex-col gap-px">
           <Toolbar />
           <Cuelist selectedId={selectedId} onSelect={setSelectedId} />
         </div>

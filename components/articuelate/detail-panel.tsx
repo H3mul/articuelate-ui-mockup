@@ -18,7 +18,7 @@ type TabType = "general" | "music" | "osc"
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#A5ADCB]">
+    <span className="field-label">
       {children}
     </span>
   )
@@ -41,9 +41,7 @@ function TextField({
       <input
         type="text"
         defaultValue={value}
-        className={`h-7 rounded-sm border border-[#363A4F] bg-[#11121C] px-2 text-[13px] text-[#CAD3F5] outline-none focus:ring-2 focus:ring-[#8AADF4] ${
-          mono ? "font-mono tabular-nums" : "font-sans"
-        }`}
+        className={`input-md ${mono ? "font-mono tabular-nums" : "font-sans"}`}
       />
     </label>
   )
@@ -63,12 +61,12 @@ function VolumeSlider({ initial }: { initial: number }) {
         value={value}
         onChange={(e) => setValue(Number(e.target.value))}
         aria-label="Target volume"
-        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[#11121C] outline-none focus:ring-2 focus:ring-[#F5A97F] accent-[#F5A97F]"
+        className="slider-peach"
         style={{
-          background: `linear-gradient(to right, #F5A97F ${value}%, #11121C ${value}%)`,
+          background: `linear-gradient(to right, var(--color-status-group) ${value}%, var(--color-element) ${value}%)`,
         }}
       />
-      <div className="text-right font-mono text-[11px] tabular-nums text-[#B8C0E0]">
+      <div className="text-right font-mono text-mono-sm tabular-nums text-text-secondary">
         {db} dB
       </div>
     </label>
@@ -80,10 +78,10 @@ function DurationField() {
     <div className="flex flex-col gap-1">
       <FieldLabel>Duration</FieldLabel>
       <div className="flex items-baseline gap-2">
-        <span className="font-mono text-[13px] tabular-nums text-[#CAD3F5]">
+        <span className="font-mono text-body tabular-nums text-text-primary">
           00:45
         </span>
-        <span className="font-mono text-[10px] text-[#6E738D]">
+        <span className="font-mono text-mono-sm text-text-disabled">
           (derived from media)
         </span>
       </div>
@@ -102,7 +100,7 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
     <div className="flex flex-col gap-2">
       <FieldLabel>Trigger Condition</FieldLabel>
       <div className="flex gap-1">
-        <div className="flex overflow-hidden rounded-sm border border-[#363A4F]">
+        <div className="flex overflow-hidden rounded-sm border border-element-border">
           {options.map((o) => {
             const active = mode === o.key
             return (
@@ -110,10 +108,8 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
                 key={o.key}
                 type="button"
                 onClick={() => setMode(o.key)}
-                className={`h-7 px-2.5 font-sans text-[12px] outline-none transition-colors focus:ring-1 focus:ring-inset focus:ring-[#8AADF4] ${
-                  active
-                    ? "bg-[#2F3C5E] text-[#EEF2FF]"
-                    : "bg-[#11121C] text-[#A5ADCB] hover:bg-[#181926]"
+                className={`tab-btn ${
+                  active ? "tab-btn-active" : "tab-btn-inactive"
                 }`}
               >
                 {o.label}
@@ -129,7 +125,7 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
           <select
             defaultValue="4"
             aria-label="Target cue"
-            className="h-7 w-full appearance-none rounded-sm border border-[#363A4F] bg-[#11121C] pl-2 pr-7 font-mono text-[12px] text-[#CAD3F5] outline-none focus:ring-2 focus:ring-[#8AADF4]"
+            className="h-control-sm w-full appearance-none rounded-sm border border-element-border bg-element pl-sm pr-7 font-mono text-mono-sm text-text-primary outline-none focus:ring-2 focus:ring-border-focus"
           >
             {CUES.map((c) => (
               <option key={c.id} value={c.number}>
@@ -137,7 +133,7 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
               </option>
             ))}
           </select>
-          <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#A5ADCB]" />
+          <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 h-icon-sm w-icon-sm -translate-y-1/2 text-text-disabled" />
         </div>
       )}
     </div>
@@ -158,8 +154,8 @@ function ColorPicker({ initial }: { initial: CueColor }) {
               type="button"
               onClick={() => setColor(c)}
               aria-label={`Color ${c}`}
-              className={`h-6 w-6 rounded-full outline-none transition-transform focus:ring-2 focus:ring-[#8AADF4] ${
-                active ? "ring-2 ring-[#EEF2FF] ring-offset-2 ring-offset-[#1E2030]" : ""
+              className={`h-xl w-xl rounded-full outline-none transition-transform focus:ring-2 focus:ring-border-focus ${
+                active ? "ring-2 ring-white ring-offset-2 ring-offset-surface" : ""
               }`}
               style={{
                 backgroundColor: CUE_COLORS[c],
@@ -184,7 +180,7 @@ function GeneralTab({ cue }: { cue: Cue }) {
           <FieldLabel>Notes</FieldLabel>
           <textarea
             defaultValue={cue.notes}
-            className="h-16 resize-none rounded-sm border border-[#363A4F] bg-[#11121C] px-2 py-1.5 font-sans text-[12px] text-[#CAD3F5] outline-none focus:ring-2 focus:ring-[#8AADF4]"
+            className="field-textarea"
           />
         </label>
       </div>
@@ -207,7 +203,7 @@ function GeneralTab({ cue }: { cue: Cue }) {
 
 function MusicTab({ cue }: { cue: Cue }) {
   if (cue.kind !== "music") {
-    return <div className="text-[13px] text-[#6E738D]">Not a music cue</div>
+    return <div className="text-body text-text-disabled">Not a music cue</div>
   }
 
   return (
@@ -215,14 +211,14 @@ function MusicTab({ cue }: { cue: Cue }) {
       {/* Media file */}
       <label className="flex flex-col gap-1">
         <FieldLabel>Media File</FieldLabel>
-        <div className="flex h-7 items-center gap-2 rounded-sm border border-[#363A4F] bg-[#11121C] px-2">
-          <FileAudio className="h-3.5 w-3.5 shrink-0 text-[#8AADF4]" />
-          <span className="truncate font-mono text-[12px] text-[#CAD3F5]">
+        <div className="flex h-control-sm items-center gap-2 rounded-sm border border-element-border bg-element px-sm">
+          <FileAudio className="h-icon-sm w-icon-sm shrink-0 text-status-playhead" />
+          <span className="truncate font-mono text-mono-sm text-text-primary">
             {cue.mediaFile}
           </span>
           <button
             type="button"
-            className="ml-auto shrink-0 rounded-sm border border-[#363A4F] bg-[#181926] px-2 py-0.5 font-sans text-[11px] text-[#B8C0E0] outline-none hover:bg-[#24273A] focus:ring-2 focus:ring-[#8AADF4]"
+            className="ml-auto shrink-0 rounded-sm border border-element-border bg-element-hover px-sm py-0.5 font-sans text-mono-sm text-text-secondary outline-none hover:bg-surface-raised focus:ring-2 focus:ring-border-focus"
           >
             Browse…
           </button>
@@ -243,7 +239,7 @@ function MusicTab({ cue }: { cue: Cue }) {
 
 function OSCTab({ cue }: { cue: Cue }) {
   if (cue.kind !== "osc") {
-    return <div className="text-[13px] text-[#6E738D]">Not an OSC cue</div>
+    return <div className="text-body text-text-disabled">Not an OSC cue</div>
   }
 
   return (
@@ -257,7 +253,7 @@ function OSCTab({ cue }: { cue: Cue }) {
 
 function EmptyState() {
   return (
-    <div className="flex h-full items-center justify-center text-[13px] text-[#6E738D]">
+    <div className="flex h-full items-center justify-center text-body text-text-disabled">
       Select a cue to edit its settings
     </div>
   )
@@ -276,11 +272,7 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 py-2 font-sans text-[12px] font-medium outline-none transition-colors focus:ring-2 focus:ring-inset focus:ring-[#8AADF4] ${
-        active
-          ? "bg-[#2F3C5E] text-[#EEF2FF]"
-          : "bg-[#11121C] text-[#A5ADCB] hover:bg-[#181926] hover:text-[#CAD3F5]"
-      }`}
+      className={active ? "tab-btn-active" : "tab-btn-inactive"}
     >
       {children}
     </button>
@@ -296,11 +288,11 @@ export function DetailPanel({ cue }: { cue: Cue | null }) {
   if (cue?.kind === "osc") tabs.push("osc")
 
   return (
-    <section className="flex h-64 shrink-0 flex-col bg-[#1E2030]">
+    <section className="detail-panel flex-col">
       {/* Header: solid tab bar on left, title and cue info on right */}
-      <div className="flex shrink-0 items-stretch border-b border-[#363A4F]">
+      <div className="flex shrink-0 items-stretch border-b border-element-border">
         {/* Solid tab bar */}
-        <div className="flex items-stretch gap-0 bg-[#181926]">
+        <div className="flex items-stretch gap-0 bg-element-hover">
           {tabs.map((t) => (
             <TabButton
               key={t}
@@ -315,12 +307,12 @@ export function DetailPanel({ cue }: { cue: Cue | null }) {
         </div>
 
         {/* Title and cue info */}
-        <div className="flex items-center gap-3 border-l border-[#363A4F] px-3">
-          <span className="font-sans text-[13px] font-semibold text-[#CAD3F5]">
+        <div className="flex items-center gap-3 border-l border-element-border px-md">
+          <span className="font-sans text-body font-semibold text-text-primary">
             Cue Settings
           </span>
           {cue && (
-            <span className="font-mono text-[12px] text-[#A5ADCB]">
+            <span className="font-mono text-mono-sm text-text-disabled">
               {cue.number} · {cue.name}
             </span>
           )}
@@ -331,7 +323,7 @@ export function DetailPanel({ cue }: { cue: Cue | null }) {
       {!cue ? (
         <EmptyState />
       ) : (
-        <div className="flex min-h-0 flex-1 overflow-y-auto p-4">
+        <div className="flex min-h-0 flex-1 overflow-y-auto p-lg">
           {tab === "general" && <GeneralTab cue={cue} />}
           {tab === "music" && <MusicTab cue={cue} />}
           {tab === "osc" && <OSCTab cue={cue} />}

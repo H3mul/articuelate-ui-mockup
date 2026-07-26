@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useId, useRef, useMemo, useLayoutEffect } from "react"
-import { Pause, Play, X, SkipBack, Spline } from "lucide-react"
+import { AppIcon } from "@/components/icons"
 import type { ActiveCue, FadeState } from "./cue-data"
 import { ACTIVE_CUES, CUE_COLORS, fmt } from "./cue-data"
 
 /** S-curve fade glyph. Points down for fade-out, up (flipped) for fade-in. */
 function FadeIcon({ dir, className = "" }: { dir: "out" | "in"; className?: string }) {
-  return <Spline className={`${className} ${dir === "in" ? "-scale-y-100" : ""}`} />
+  return <AppIcon name="cueType.fade" className={`${className} ${dir === "in" ? "-scale-y-100" : ""}`} />
 }
 
 /**
@@ -17,7 +17,7 @@ function FadeIcon({ dir, className = "" }: { dir: "out" | "in"; className?: stri
 function VerticalLEDMeter({
   level,
   count = 12,
-  width = "w-2",
+  width = "meter-track-md",
 }: {
   level: number
   count?: number
@@ -36,11 +36,9 @@ function VerticalLEDMeter({
         return (
           <div
             key={i}
-            className="h-1.5 w-1.5 rounded-full"
+            className={`led-dot ${isLit ? "led-dot-lit" : ""}`}
             style={{
-              backgroundColor: isLit ? color : "var(--color-element)",
-              opacity: isLit ? 1 : 0.25,
-              border: "1px solid var(--color-element-border)",
+              backgroundColor: isLit ? color : undefined,
             }}
           />
         )
@@ -51,9 +49,6 @@ function VerticalLEDMeter({
 
 /**
  * Stylised waveform progress bar.
- * Renders a fixed pseudo-waveform of mirrored vertical bars. A left-to-right
- * highlight clip (progress 0-1) shows elapsed playback in a brighter accent;
- * bars past the playhead are muted/dim.
  */
 function WaveformProgress({
   progress,
@@ -169,20 +164,20 @@ function WaveformProgress({
 }
 
 function GlobalButton({
-  icon,
+  name,
   label,
   active,
   danger,
   onClick,
 }: {
-  icon: React.ReactNode
+  name: string
   label: string
   active?: boolean
   danger?: boolean
   onClick?: () => void
 }) {
   let cls = "btn-icon-sm"
-  if (danger) cls += " text-status-error hover:text-status-error"
+  if (danger) cls += " btn-danger"
   else if (active) cls += " border-status-group bg-status-group/15 text-status-group"
 
   return (
@@ -193,26 +188,26 @@ function GlobalButton({
       aria-label={label}
       className={cls}
     >
-      {icon}
+      <AppIcon name={name as any} className="h-icon-md w-icon-md" />
     </button>
   )
 }
 
 function CueButton({
-  icon,
+  name,
   label,
   active,
   danger,
   onClick,
 }: {
-  icon: React.ReactNode
+  name: string
   label: string
   active?: boolean
   danger?: boolean
   onClick?: () => void
 }) {
   let cls = "btn-global"
-  if (danger) cls += " btn-global-danger"
+  if (danger) cls += " btn-danger"
   else if (active) cls += " btn-global-active"
 
   return (
@@ -223,7 +218,7 @@ function CueButton({
       aria-label={label}
       className={cls}
     >
-      {icon}
+      <AppIcon name={name as any} className="h-icon-sm w-icon-sm" />
     </button>
   )
 }
@@ -254,24 +249,24 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
           </div>
           <div className="flex shrink-0 items-center gap-xs">
             <CueButton
-              icon={<SkipBack className="h-icon-sm w-icon-sm" />}
+              name="transport.skipBack"
               label="Back to Start"
               onClick={() => setProgress(0)}
             />
             <CueButton
-              icon={paused ? <Play className="h-icon-sm w-icon-sm" /> : <Pause className="h-icon-sm w-icon-sm" />}
+              name={paused ? "transport.play" : "transport.pause"}
               label={paused ? "Resume" : "Pause"}
               active={paused}
               onClick={() => setPaused((p) => !p)}
             />
             <CueButton
-              icon={<FadeIcon dir={fade === "out" ? "in" : "out"} className="h-icon-sm w-icon-sm" />}
+              name="cueType.fade"
               label={fade === "out" ? "Fade In" : "Fade Out"}
               active={fade !== "none"}
               onClick={() => setFade((f) => (f === "out" ? "in" : "out"))}
             />
             <CueButton
-              icon={<X className="h-icon-sm w-icon-sm" />}
+              name="transport.stop"
               label={`Stop ${cue.name}`}
               danger
             />
@@ -303,10 +298,10 @@ function ActiveCueRow({ cue }: { cue: ActiveCue }) {
         </div>
       </div>
 
-      {/* Right column: Vertical stereo meters — full row height */}
+      {/* Right column: Vertical stereo meters */}
       <div className="flex shrink-0 items-center self-center gap-px">
-        <VerticalLEDMeter level={cue.level} count={10} width="w-1.5" />
-        <VerticalLEDMeter level={cue.level * 0.9} count={10} width="w-1.5" />
+        <VerticalLEDMeter level={cue.level} count={10} width="meter-track-sm" />
+        <VerticalLEDMeter level={cue.level * 0.9} count={10} width="meter-track-sm" />
       </div>
     </div>
   )
@@ -328,40 +323,30 @@ export function RuntimeSidebar() {
         </span>
       </div>
 
-      {/* Global controls — buttons + master gain + vertical stereo master meter */}
+      {/* Global controls */}
       <div className="flex shrink-0 items-center gap-sm border-b border-element-border px-md py-sm">
-        {/* Controls column */}
         <div className="flex flex-1 flex-col gap-sm">
           {/* Transport buttons */}
           <div className="flex items-center gap-xs">
-            <GlobalButton icon={<SkipBack className="h-icon-md w-icon-md" />} label="Restart All" />
+            <GlobalButton name="transport.skipBack" label="Restart All" />
             <GlobalButton
-              icon={
-                globalPaused
-                  ? <Play className="h-icon-md w-icon-md" />
-                  : <Pause className="h-icon-md w-icon-md" />
-              }
+              name={globalPaused ? "transport.play" : "transport.pause"}
               label={globalPaused ? "Resume All" : "Pause All"}
               active={globalPaused}
               onClick={() => setGlobalPaused((p) => !p)}
             />
             <GlobalButton
-              icon={
-                <FadeIcon
-                  dir={globalFade === "out" ? "in" : "out"}
-                  className="h-icon-md w-icon-md"
-                />
-              }
+              name="cueType.fade"
               label={globalFade === "out" ? "Fade In" : "Fade Out"}
               active={globalFade !== "none"}
               onClick={() => setGlobalFade((f) => (f === "out" ? "in" : "out"))}
             />
-            <GlobalButton icon={<X className="h-icon-md w-icon-md" />} label="Kill All" danger />
+            <GlobalButton name="transport.stop" label="Kill All" danger />
           </div>
 
           {/* Master gain slider */}
           <div className="flex items-center gap-sm">
-            <span className="shrink-0 font-mono text-mono-sm uppercase tracking-wider text-text-disabled">
+            <span className="shrink-0 label-mono-sm uppercase tracking-wider text-text-disabled">
               Master
             </span>
             <input
@@ -371,7 +356,7 @@ export function RuntimeSidebar() {
               value={gain}
               onChange={(e) => setGain(Number(e.target.value))}
               aria-label="Master gain"
-              className="slider-peach h-1.5 flex-1"
+              className="slider-peach flex-1"
               style={{
                 background: `linear-gradient(to right, var(--color-status-group) ${gain}%, var(--color-element) ${gain}%)`,
               }}
@@ -392,17 +377,17 @@ export function RuntimeSidebar() {
               className="device-dot"
               style={{ backgroundColor: deviceOk ? "var(--color-status-running)" : "var(--color-status-wait)" }}
             />
-            <span className="font-mono text-mono-sm text-text-disabled">Audio Interface 1</span>
-            <span className="ml-auto font-mono text-mono-sm text-text-disabled">
+            <span className="label-mono-sm text-text-disabled">Audio Interface 1</span>
+            <span className="ml-auto label-mono-sm text-text-disabled">
               {deviceOk ? "Operational" : "Error"}
             </span>
           </button>
         </div>
 
-        {/* Master out vertical stereo meters — flush right */}
+        {/* Master out vertical stereo meters */}
         <div className="flex shrink-0 items-end gap-px self-stretch py-xs">
-          <VerticalLEDMeter level={0.72} count={12} width="w-2" />
-          <VerticalLEDMeter level={0.66} count={12} width="w-2" />
+          <VerticalLEDMeter level={0.72} count={12} width="meter-track-md" />
+          <VerticalLEDMeter level={0.66} count={12} width="meter-track-md" />
         </div>
       </div>
 

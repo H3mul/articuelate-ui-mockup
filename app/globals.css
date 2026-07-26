@@ -37,6 +37,11 @@
   --spacing-icon-sm: 14px;
   --spacing-icon-md: 18px;
 
+  /* Micro dimensions for LED meters & status pips */
+  --spacing-led-dot: 6px;
+  --spacing-meter-width-sm: 6px;
+  --spacing-meter-width-md: 8px;
+
   /* Panel Structural Dimensions */
   --spacing-sidebar-width: 320px;
   --spacing-detail-height: 256px;
@@ -46,7 +51,7 @@
   --spacing-textarea-height: 64px;
 
   /* Radii */
-  --radius-sm: 3px;
+  --radius-sm: 4px;
   --radius-md: 5px;
   --radius-full: 9999px;
 
@@ -74,6 +79,31 @@
   --color-border-divider: #363A4F;
   --color-border-emphasized: #494F6A;
   --color-border-focus: #8AADF4;
+
+  /* Pre-calculated alpha tints for native GUI translation */
+  --color-status-running-bg: rgba(166, 218, 149, 0.15);
+  --color-border-row-divider: rgba(24, 25, 38, 0.60);
+  --color-status-playhead-bg: rgba(138, 173, 244, 0.15);
+  --color-status-running-bg-30: rgba(166, 218, 149, 0.30);
+  --color-status-running-bg-20: rgba(166, 218, 149, 0.20);
+  --color-status-running-bg-70: rgba(166, 218, 149, 0.70);
+  --color-status-group-bg: rgba(245, 169, 127, 0.15);
+  --color-status-error-bg: rgba(237, 135, 150, 0.15);
+  --color-status-error-bg-12: rgba(237, 135, 150, 0.12);
+  --color-status-group-bg: rgba(245, 169, 127, 0.15);
+  --color-status-group-bg-25: rgba(245, 169, 127, 0.25);
+  --color-border-divider-40: rgba(24, 25, 38, 0.40);
+  --color-text-disabled-50: rgba(165, 173, 203, 0.50);
+
+  /* Slider Component Geometry & Colors */
+  --spacing-slider-track-height: 6px;
+  --spacing-slider-thumb-size: 14px;
+  --color-slider-track: var(--color-element);
+  --color-slider-fill: var(--color-status-group);
+  --color-slider-thumb: var(--color-text-primary);
+
+  /* Status pip dot */
+  --spacing-dot-sm: 8px;
 }
 
 :root {
@@ -114,9 +144,34 @@
       box-shadow: 0 0 0 2px var(--color-border-focus), 0 0 0 4px var(--color-app-bg);
     }
   }
+
+  /* Override for font-size tokens that @theme inline doesn't generate as utilities */
+  .text-mono-sm {
+    font-size: var(--font-size-mono-sm);
+  }
+  .text-mono-xl {
+    font-size: var(--font-size-mono-xl);
+  }
+  .text-body {
+    font-size: var(--font-size-body);
+  }
+  .text-heading {
+    font-size: var(--font-size-heading);
+  }
 }
 
 @layer components {
+  /* ──────────────────────────────────────────────
+     Grid Cell Truncation (prevents Taffy blowouts)
+     ────────────────────────────────────────────── */
+  .cue-row-grid > *,
+  .cuelist-header > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
   /* ──────────────────────────────────────────────
      Panels & Environment
      ────────────────────────────────────────────── */
@@ -142,7 +197,7 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    gap: 4px;
+    gap: 8px;
   }
 
   .action-toolbar {
@@ -190,6 +245,7 @@
   }
   .btn-icon-sm:hover { color: var(--color-text-primary); background-color: var(--color-element-hover); }
   .btn-icon-sm:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+  .btn-icon-sm:focus { box-shadow: 0 0 0 2px var(--color-border-focus); border-color: var(--color-border-focus); }
 
   .btn-icon-xs {
     display: flex; align-items: center; justify-content: center;
@@ -204,6 +260,7 @@
   }
   .btn-icon-xs:hover { color: var(--color-text-primary); background-color: var(--color-element-hover); }
   .btn-icon-xs:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+  .btn-icon-xs:focus { box-shadow: 0 0 0 2px var(--color-border-focus); border-color: var(--color-border-focus); }
 
   /* ──────────────────────────────────────────────
      Primary Transport Triggers
@@ -211,24 +268,25 @@
   .btn-panic {
     display: flex; align-items: center; justify-content: center;
     background-color: var(--color-element);
-    border: 1px solid var(--color-element-border);
+    border: 2px solid var(--color-status-error);
     border-radius: var(--radius-sm);
     color: var(--color-status-error);
     transition: background-color 75ms, border-color 75ms;
     cursor: default;
-    height: var(--spacing-control-sm);
+    height: var(--spacing-control-md);
     width: var(--spacing-btn-panic-width);
     font-weight: 600;
     font-size: 12px;
     gap: 6px;
   }
   .btn-panic:hover { background-color: var(--color-element-hover); }
-  .btn-panic:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+  .btn-panic:active { background-color: var(--color-element-active); border-color: var(--color-status-error); }
+  .btn-panic:focus { box-shadow: 0 0 0 2px var(--color-status-error); }
 
   .btn-go {
     display: flex; align-items: center; justify-content: center;
     background-color: var(--color-element);
-    border: 1px solid var(--color-border-emphasized);
+    border: 2px solid var(--color-status-running);
     border-radius: var(--radius-sm);
     color: var(--color-status-running);
     transition: background-color 75ms, border-color 75ms;
@@ -240,26 +298,27 @@
     letter-spacing: 0.1em;
     gap: 8px;
   }
-  .btn-go:hover { background-color: var(--color-element-hover); }
-  .btn-go:active { background-color: var(--color-element-active); border-color: var(--color-border-focus); }
+  .btn-go:hover { background-color: var(--color-status-running-bg); }
+  .btn-go:active { background-color: var(--color-element-active); border-color: var(--color-status-running); }
+  .btn-go:focus { box-shadow: 0 0 0 2px var(--color-status-running); }
 
   /* ──────────────────────────────────────────────
      Conductor Panel
      ────────────────────────────────────────────── */
   .conductor-current {
     display: flex; align-items: center;
-    height: var(--spacing-control-sm);
+    height: var(--spacing-control-md);
     gap: 8px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-element-border);
     background-color: var(--color-element-hover);
-    padding: 0 var(--spacing-md);
+    padding: 6px var(--spacing-md);
   }
 
   .conductor-next {
     display: flex; align-items: center;
     min-width: 0; flex: 1;
-    gap: 12px;
+    gap: 8px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-border-emphasized);
     background-color: var(--color-element);
@@ -299,6 +358,7 @@
   }
   .input-md:focus {
     box-shadow: 0 0 0 2px var(--color-border-focus);
+    border-color: var(--color-border-focus);
   }
 
   /* Micro Inputs (Used inside table cells or compact grids) */
@@ -315,6 +375,7 @@
   }
   .input-xs:focus {
     box-shadow: 0 0 0 2px var(--color-border-focus);
+    border-color: var(--color-border-focus);
   }
 
   .field-textarea {
@@ -331,6 +392,7 @@
   }
   .field-textarea:focus {
     box-shadow: 0 0 0 2px var(--color-border-focus);
+    border-color: var(--color-border-focus);
   }
 
   .inspector-section-header {
@@ -347,6 +409,8 @@
      Tabs
      ────────────────────────────────────────────── */
   .tab-btn {
+    display: flex; align-items: center; justify-content: center;
+    height: var(--spacing-control-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     font-family: var(--font-sans);
     font-size: 12px;
@@ -358,16 +422,33 @@
     box-shadow: inset 0 0 0 2px var(--color-border-focus);
   }
   .tab-btn-active {
+    display: flex; align-items: center; justify-content: center;
+    height: var(--spacing-control-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    outline: none;
     background-color: var(--color-selection);
     color: var(--color-text-primary);
   }
   .tab-btn-inactive {
+    display: flex; align-items: center; justify-content: center;
+    height: var(--spacing-control-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    outline: none;
     background-color: var(--color-element);
     color: var(--color-text-disabled);
   }
   .tab-btn-inactive:hover {
     background-color: var(--color-element-hover);
     color: var(--color-text-primary);
+  }
+  .tab-btn-inactive:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--color-border-focus);
   }
 
   /* ──────────────────────────────────────────────
@@ -383,12 +464,17 @@
     letter-spacing: 0.05em;
   }
   .badge-next {
-    background-color: color-mix(in srgb, var(--color-status-playhead) 15%, transparent);
+    background-color: var(--color-status-playhead-bg);
     color: var(--color-status-playhead);
   }
   .badge-running {
-    background-color: color-mix(in srgb, var(--color-status-running) 15%, transparent);
+    background-color: var(--color-status-running-bg);
     color: var(--color-status-running);
+  }
+
+  .badge-chip {
+    min-width: 68px;
+    text-align: center;
   }
 
   /* ──────────────────────────────────────────────
@@ -411,7 +497,7 @@
   .cue-row-grid {
     display: grid; width: 100%; align-items: center;
     gap: 4px;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border-subtle) 60%, transparent);
+    border-bottom: 1px solid var(--color-border-row-divider);
     padding: 4px var(--spacing-sm);
     font-size: var(--font-size-body);
     outline: none;
@@ -430,7 +516,7 @@
   .cue-row-base {
     transition: background-color 75ms;
     position: relative;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border-divider) 40%, transparent);
+    border-bottom: 1px solid var(--color-border-divider-40);
   }
 
   .cue-row-disabled {
@@ -442,7 +528,7 @@
   }
 
   .cue-row-error {
-    background-color: color-mix(in srgb, var(--color-status-error) 12%, transparent) !important;
+    background-color: var(--color-status-error-bg-12) !important;
   }
 
   .cue-row-standby {
@@ -455,7 +541,7 @@
   }
 
   .cue-row-running {
-    background-color: color-mix(in srgb, var(--color-status-running) 20%, transparent) !important;
+    background-color: var(--color-status-running-bg-20) !important;
     color: var(--color-text-primary);
   }
 
@@ -471,12 +557,7 @@
   }
   .time-cell-fill {
     position: absolute; inset: 0; right: auto;
-    background-color: color-mix(in srgb, var(--color-status-running) 30%, transparent);
-  }
-  .time-cell-outline {
-    position: absolute; inset: 0;
-    border-radius: var(--radius-sm);
-    border: 1px solid color-mix(in srgb, var(--color-status-running) 70%, transparent);
+    background-color: var(--color-status-running-bg-30);
   }
   .time-cell-text {
     position: relative;
@@ -485,9 +566,17 @@
     font-variant-numeric: tabular-nums;
   }
   .time-cell-text-emphasis {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-body);
+    font-variant-numeric: tabular-nums;
     color: var(--color-text-primary);
   }
   .time-cell-text-muted {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-body);
+    font-variant-numeric: tabular-nums;
     color: var(--color-text-disabled);
   }
 
@@ -527,7 +616,7 @@
   .btn-global {
     display: flex; align-items: center; justify-content: center;
     height: var(--spacing-xl); width: var(--spacing-xl);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     border: 1px solid var(--color-element-border);
     background-color: var(--color-element);
     color: var(--color-text-secondary);
@@ -535,21 +624,49 @@
     transition: background-color 75ms, color 75ms, border-color 75ms;
   }
   .btn-global:hover { background-color: var(--color-element-hover); color: var(--color-text-primary); }
-  .btn-global:focus-visible { box-shadow: 0 0 0 2px var(--color-border-focus); }
+  .btn-global:focus { box-shadow: 0 0 0 2px var(--color-border-focus); border-color: var(--color-border-focus); }
 
   .btn-global-active {
     border: 1px solid var(--color-status-group);
-    background-color: color-mix(in srgb, var(--color-status-group) 15%, transparent);
+    background-color: var(--color-status-group-bg);
     color: var(--color-status-group);
   }
-  .btn-global-active:hover { background-color: color-mix(in srgb, var(--color-status-group) 25%, transparent); }
+  .btn-global-active:hover { background-color: var(--color-status-group-bg-25); }
 
-  .btn-global-danger {
-    border: 1px solid var(--color-element-border);
-    background-color: var(--color-element);
+  .btn-danger {
     color: var(--color-status-error);
   }
-  .btn-global-danger:hover { background-color: color-mix(in srgb, var(--color-status-error) 15%, transparent); }
+  .btn-danger:hover {
+    background-color: var(--color-status-error-bg);
+    color: var(--color-status-error);
+  }
+  .btn-danger:focus {
+    box-shadow: 0 0 0 2px var(--color-status-error);
+    border-color: var(--color-status-error);
+  }
+
+  /* ──────────────────────────────────────────────
+     LED Meter & Level Indicators
+     ────────────────────────────────────────────── */
+  .led-dot {
+    height: var(--spacing-led-dot);
+    width: var(--spacing-led-dot);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-element-border);
+    background-color: var(--color-element);
+    opacity: 0.25;
+    transition: opacity 50ms, background-color 50ms;
+  }
+  .led-dot-lit {
+    opacity: 1;
+  }
+
+  .meter-track-sm {
+    width: var(--spacing-meter-width-sm);
+  }
+  .meter-track-md {
+    width: var(--spacing-meter-width-md);
+  }
 
   /* ──────────────────────────────────────────────
      Device Status Chip
@@ -566,10 +683,10 @@
     transition: background-color 75ms;
   }
   .device-chip:hover { background-color: var(--color-element-hover); }
-  .device-chip:focus-visible { box-shadow: 0 0 0 2px var(--color-border-focus); }
+  .device-chip:focus { box-shadow: 0 0 0 2px var(--color-border-focus); border-color: var(--color-border-focus); }
 
   .device-dot {
-    height: 8px; width: 8px; flex-shrink: 0;
+    height: var(--spacing-dot-sm); width: var(--spacing-dot-sm); flex-shrink: 0;
     border-radius: var(--radius-full);
   }
 
@@ -577,15 +694,15 @@
      Range Sliders
      ────────────────────────────────────────────── */
   .slider-peach {
-    height: 6px; width: 100%;
+    height: var(--spacing-slider-track-height); width: 100%;
     cursor: pointer;
     appearance: none;
     border-radius: var(--radius-full);
-    background-color: var(--color-element);
+    background-color: var(--color-slider-track);
     outline: none;
-    accent-color: var(--color-status-group);
+    accent-color: var(--color-slider-fill);
   }
   .slider-peach:focus-visible {
-    box-shadow: 0 0 0 2px var(--color-status-group);
+    box-shadow: 0 0 0 2px var(--color-slider-fill);
   }
 }

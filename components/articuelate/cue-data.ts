@@ -1,4 +1,4 @@
-export type CueKind = "music" | "control" | "osc" | "group" | "light" | "fade"
+export type CueKind = "music" | "control" | "osc" | "group" | "fade"
 
 export type CueState = "idle" | "standby" | "running"
 
@@ -68,10 +68,10 @@ export const CUES: Cue[] = [
   {
     id: "c1-1",
     number: "1.1",
-    name: "House Lights Half",
-    notes: "Bring house to 50% as music settles.",
+    name: "Volume Down",
+    notes: "Dim house to 50% as music settles.",
     target: "universe 1 · ch 12",
-    kind: "light",
+    kind: "control",
     triggerCondition: "with",
     triggerTarget: "1",
     preWait: "00:02",

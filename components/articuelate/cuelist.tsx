@@ -1,6 +1,7 @@
 "use client"
 
-import { Play, Music, Lightbulb, Folder, Radio, SlidersHorizontal, Spline } from "lucide-react"
+import { AppIcon } from "@/components/icons"
+import type { AppIconName } from "@/components/icons"
 import type { Cue, CueKind } from "./cue-data"
 import { CUES, CUE_COLORS } from "./cue-data"
 
@@ -17,22 +18,16 @@ function stripType(target: string): string {
   return idx === -1 ? target : target.slice(idx + sep.length)
 }
 
+const CUE_TYPE_ICON: Record<CueKind, AppIconName> = {
+  group: "cueType.group",
+  fade: "cueType.fade",
+  osc: "cueType.osc",
+  control: "cueType.control",
+  music: "cueType.audio",
+}
+
 function KindIcon({ kind }: { kind: CueKind }) {
-  const cls = "h-icon-sm w-icon-sm shrink-0"
-  switch (kind) {
-    case "group":
-      return <Folder className={cls} />
-    case "light":
-      return <Lightbulb className={cls} />
-    case "fade":
-      return <Spline className={cls} />
-    case "osc":
-      return <Radio className={cls} />
-    case "control":
-      return <SlidersHorizontal className={cls} />
-    default:
-      return <Music className={cls} />
-  }
+  return <AppIcon name={CUE_TYPE_ICON[kind]} className="h-icon-sm w-icon-sm shrink-0" />
 }
 
 /**
@@ -48,22 +43,19 @@ function TimeCell({
 }: {
   value: string
   fill?: number
-  variant?: "plain" | "fill" | "outline"
+  variant?: "plain" | "fill"
   emphasize?: boolean
 }) {
   return (
     <div
       className="time-cell"
-      style={variant === "fill" || variant === "outline" ? { border: "2px solid rgba(166, 218, 149, 0.3)" } : undefined}
+      style={variant === "fill" ? { border: "2px solid var(--color-status-running-bg-30)" } : undefined}
     >
       {variant === "fill" && (
         <div
           className="time-cell-fill"
           style={{ width: `${Math.min(1, Math.max(0, fill)) * 100}%` }}
         />
-      )}
-      {variant === "outline" && (
-        <div className="time-cell-outline" />
       )}
       <span className={variant === "fill" || emphasize ? "time-cell-text-emphasis" : "time-cell-text-muted"}>
         {value}
@@ -103,22 +95,22 @@ function CueRow({
       {/* Playhead */}
       <div className="flex items-center justify-center">
         {standby && (
-          <Play className="h-icon-sm w-icon-sm fill-status-playhead text-status-playhead" strokeWidth={0} />
+          <AppIcon name="transport.play" className="h-icon-sm w-icon-sm fill-status-playhead text-status-playhead" strokeWidth={0} />
         )}
         {running && (
-          <Play className="h-icon-sm w-icon-sm fill-status-running text-status-running" strokeWidth={0} />
+          <AppIcon name="transport.play" className="h-icon-sm w-icon-sm fill-status-running text-status-running" strokeWidth={0} />
         )}
       </div>
 
       {/* Cue number */}
-      <div className={`font-mono text-mono-sm tabular-nums ${running ? "text-status-running" : "text-text-secondary"}`}>
+      <div className={`font-mono text-mono-sm tabular-nums text-left ${running ? "text-status-running" : "text-text-secondary"}`}>
         {cue.number}
       </div>
 
       {/* Name · type icon */}
       <div
         className="flex min-w-0 items-center gap-sm"
-        style={{ paddingLeft: cue.depth * 14 }}
+        style={{ paddingLeft: `calc(var(--spacing-icon-sm) * ${cue.depth})` }}
       >
         <span className="text-text-disabled">
           <KindIcon kind={cue.kind} />
@@ -128,19 +120,19 @@ function CueRow({
         </span>
       </div>
 
-      {/* Context / target — separate column for vertical alignment */}
-      <div className="truncate font-mono text-mono-sm text-text-disabled">
+      {/* Context / target */}
+      <div className="truncate font-mono text-mono-sm text-left text-text-disabled">
         {stripType(cue.target)}
       </div>
 
-      {/* Pre-wait — fills during pre-delay */}
+      {/* Pre-wait */}
       <TimeCell
         value={microtime(cue.preWait)}
         variant={cue.preProgress ? "fill" : "plain"}
         fill={cue.preProgress ?? 0}
       />
 
-      {/* Duration — fills with playback progress; outlined when armed */}
+      {/* Duration */}
       <TimeCell
         value={microtime(cue.duration)}
         variant={running ? "fill" : standby ? "outline" : "plain"}
@@ -148,7 +140,7 @@ function CueRow({
         emphasize={running}
       />
 
-      {/* Post-wait — fills during post-delay */}
+      {/* Post-wait */}
       <TimeCell
         value={microtime(cue.postWait)}
         variant={cue.postProgress ? "fill" : "plain"}

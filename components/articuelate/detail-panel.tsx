@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { FileAudio, ChevronDown } from "lucide-react"
+import { AppIcon } from "@/components/icons"
 import type { Cue, CueColor, TriggerCondition } from "./cue-data"
 import { CUES, CUE_COLORS } from "./cue-data"
 
@@ -133,7 +133,7 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
               </option>
             ))}
           </select>
-          <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 h-icon-sm w-icon-sm -translate-y-1/2 text-text-disabled" />
+          <AppIcon name="ui.chevronDown" className="pointer-events-none absolute right-1.5 top-1/2 h-icon-sm w-icon-sm -translate-y-1/2 text-text-disabled" />
         </div>
       )}
     </div>
@@ -145,7 +145,7 @@ function ColorPicker({ initial }: { initial: CueColor }) {
   return (
     <div className="flex flex-col gap-sm">
       <FieldLabel>Highlight</FieldLabel>
-      <div className="flex items-center gap-xs.5">
+      <div className="flex items-center gap-sm">
         {COLOR_ORDER.map((c) => {
           const active = color === c
           return (
@@ -158,8 +158,7 @@ function ColorPicker({ initial }: { initial: CueColor }) {
                 active ? "ring-2 ring-white ring-offset-2 ring-offset-surface" : ""
               }`}
               style={{
-                backgroundColor: CUE_COLORS[c],
-                opacity: c === "none" ? 0.5 : 1,
+                backgroundColor: c === "none" ? "var(--color-text-disabled-50)" : CUE_COLORS[c],
               }}
             />
           )
@@ -212,7 +211,7 @@ function MusicTab({ cue }: { cue: Cue }) {
       <label className="flex flex-col gap-xs">
         <FieldLabel>Media File</FieldLabel>
         <div className="flex h-control-sm items-center gap-sm rounded-sm border border-element-border bg-element px-sm">
-          <FileAudio className="h-icon-sm w-icon-sm shrink-0 text-status-playhead" />
+          <AppIcon name="ui.fileAudio" className="h-icon-sm w-icon-sm shrink-0 text-status-playhead" />
           <span className="truncate font-mono text-mono-sm text-text-primary">
             {cue.mediaFile}
           </span>

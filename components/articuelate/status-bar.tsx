@@ -1,20 +1,14 @@
 "use client"
 
-import {
-  Clock,
-  MousePointerClick,
-  Columns2,
-  Rows2,
-  Save,
-  Settings,
-} from "lucide-react"
+import { AppIcon } from "@/components/icons"
+import type { AppIconName } from "@/components/icons"
 
 function IconButton({
-  icon: Icon,
+  name,
   label,
   active,
 }: {
-  icon: React.ElementType
+  name: AppIconName
   label: string
   active?: boolean
 }) {
@@ -27,23 +21,23 @@ function IconButton({
         active ? "text-text-primary" : "text-text-disabled"
       }`}
     >
-      <Icon className="h-icon-sm w-icon-sm" />
+      <AppIcon name={name} className="h-icon-sm w-icon-sm" />
     </button>
   )
 }
 
 export function StatusBar({ selectedCount }: { selectedCount: number }) {
   return (
-    <footer className="flex h-status-bar shrink-0 items-center gap-lg bg-surface px-md text-mono-sm text-text-secondary">
+    <footer className="flex h-toolbar shrink-0 items-center gap-lg bg-surface px-md text-mono-sm text-text-secondary">
       <div className="flex items-center gap-sm">
-        <Clock className="h-icon-sm w-icon-sm" />
+        <AppIcon name="ui.clock" className="h-icon-sm w-icon-sm" />
         <span className="font-mono tabular-nums text-text-primary">
           Show 00:14:22
         </span>
       </div>
 
       <div className="flex items-center gap-sm">
-        <MousePointerClick className="h-icon-sm w-icon-sm" />
+        <AppIcon name="ui.mouseClick" className="h-icon-sm w-icon-sm" />
         <span className="font-mono tabular-nums">
           {selectedCount} selected
         </span>
@@ -52,10 +46,10 @@ export function StatusBar({ selectedCount }: { selectedCount: number }) {
       <span className="font-mono tabular-nums text-text-disabled">6 cues</span>
 
       <div className="ml-auto flex items-center gap-md">
-        {/* Global app actions, moved down from the toolbar */}
+        {/* Global app actions */}
         <div className="flex items-center gap-sm">
-          <IconButton icon={Save} label="Save workspace" />
-          <IconButton icon={Settings} label="Settings" />
+          <IconButton name="ui.save" label="Save workspace" />
+          <IconButton name="ui.settings" label="Settings" />
         </div>
 
         <div className="divider-vert h-3" />
@@ -63,8 +57,8 @@ export function StatusBar({ selectedCount }: { selectedCount: number }) {
         {/* Layout panel toggles */}
         <div className="flex items-center gap-sm">
           <span className="text-text-disabled">Layout</span>
-          <IconButton icon={Columns2} label="Columns layout" active />
-          <IconButton icon={Rows2} label="Rows layout" />
+          <IconButton name="ui.layout.columns" label="Columns layout" active />
+          <IconButton name="ui.layout.rows" label="Rows layout" />
         </div>
       </div>
     </footer>

@@ -34,6 +34,7 @@
   --spacing-col-drag: 14px;
   --spacing-col-cue-number: 46px;
   --spacing-col-time: 70px;
+  --spacing-col-menu: 24px;
   --spacing-min-panel: 225px;
   --spacing-icon-sm: 14px;
   --spacing-icon-md: 18px;
@@ -199,12 +200,6 @@
     flex-direction: column;
     flex-shrink: 0;
     gap: 8px;
-  }
-
-  .action-toolbar {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
   }
 
   .divider-vert {
@@ -492,7 +487,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-secondary);
-    grid-template-columns: var(--spacing-col-drag) var(--spacing-col-playhead) var(--spacing-col-cue-number) 1fr 1fr var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-time);
+    grid-template-columns: var(--spacing-col-drag) var(--spacing-col-playhead) var(--spacing-col-cue-number) 1fr 1fr var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-menu);
   }
 
   .cue-row-grid {
@@ -502,7 +497,10 @@
     padding: 4px var(--spacing-sm) 4px var(--spacing-xs);
     font-size: var(--font-size-body);
     outline: none;
-    grid-template-columns: var(--spacing-col-drag) var(--spacing-col-playhead) var(--spacing-col-cue-number) 1fr 1fr var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-time);
+    grid-template-columns: var(--spacing-col-drag) var(--spacing-col-playhead) var(--spacing-col-cue-number) 1fr 1fr var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-time) var(--spacing-col-menu);
+  }
+  .cue-row-grid .btn-icon-xs:focus {
+    opacity: 1 !important;
   }
   .cue-row-grid:focus-visible {
     box-shadow: inset 0 0 0 1px var(--color-border-focus);
@@ -524,6 +522,16 @@
   }
   .drag-handle:active {
     cursor: grabbing;
+  }
+
+  /* Menu button hidden by default, visible on row hover */
+  .cue-row-grid .btn-icon-xs[aria-label="Cue menu"] {
+    opacity: 0;
+    transition: opacity 75ms;
+  }
+  .cue-row-grid:hover .btn-icon-xs[aria-label="Cue menu"],
+  .cue-row-grid .btn-icon-xs[aria-label="Cue menu"]:focus {
+    opacity: 1;
   }
 
   /* ──────────────────────────────────────────────

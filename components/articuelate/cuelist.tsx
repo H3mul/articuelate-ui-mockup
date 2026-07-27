@@ -1,9 +1,12 @@
 "use client"
 
+import { useState, useRef } from "react"
 import { AppIcon } from "@/components/icons"
 import type { AppIconName } from "@/components/icons"
 import type { Cue, CueKind } from "./cue-data"
 import { CUES, CUE_COLORS } from "./cue-data"
+import { MenuButton, ContextMenu, CueTypeSubmenu } from "./context-menu"
+import type { ContextMenuAction } from "./context-menu"
 
 /** Convert "MM:SS" to "M:SS.000" microsecond-style display. */
 function microtime(mmss: string): string {
@@ -69,11 +72,13 @@ function CueRow({
   zebra,
   selected,
   onSelect,
+  onMenuOpen,
 }: {
   cue: Cue
   zebra: boolean
   selected: boolean
   onSelect: () => void
+  onMenuOpen: (id: string, x: number, y: number) => void
 }) {
   const running = cue.state === "running"
   const standby = cue.state === "standby"
@@ -89,6 +94,10 @@ function CueRow({
     <button
       type="button"
       onClick={onSelect}
+      onContextMenu={(e) => {
+        e.preventDefault()
+        onMenuOpen(cue.id, e.clientX, e.clientY)
+      }}
       className={rowCls}
       style={{ borderLeft: `3px solid ${stripe ?? "transparent"}` }}
     >
@@ -151,6 +160,11 @@ function CueRow({
         variant={cue.postProgress ? "fill" : "plain"}
         fill={cue.postProgress ?? 0}
       />
+
+      {/* Context menu */}
+      <div className="flex items-center justify-center">
+        <MenuButton onOpen={(x, y) => onMenuOpen(cue.id, x, y)} />
+      </div>
     </button>
   )
 }
@@ -162,6 +176,18 @@ export function Cuelist({
   selectedId: string | null
   onSelect: (id: string) => void
 }) {
+  const [menuCueId, setMenuCueId] = useState<string | null>(null)
+  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null)
+  const [addOpen, setAddOpen] = useState(false)
+  const addBtnRef = useRef<HTMLButtonElement>(null)
+  const addTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const openMenu = (id: string, x: number, y: number) => {
+    onSelect(id)
+    setMenuCueId(id)
+    setMenuPos({ x, y })
+  }
+
   return (
     <section className="panel-surface flex min-h-0 flex-1 flex-col">
       {/* Header row */}
@@ -174,6 +200,7 @@ export function Cuelist({
         <div className="text-center">Pre</div>
         <div className="text-center">Duration</div>
         <div className="text-center">Post</div>
+        <div />
       </div>
 
       {/* Scrollable cue list + footer */}
@@ -185,21 +212,67 @@ export function Cuelist({
             zebra={i % 2 === 1}
             selected={cue.id === selectedId}
             onSelect={() => onSelect(cue.id)}
+            onMenuOpen={(id, x, y) => openMenu(id, x, y)}
           />
         ))}
 
         {/* Cuelist footer */}
         <div className="flex shrink-0 items-center border-t border-border-divider-40 pt-md pb-md px-sm">
           <button
+            ref={addBtnRef}
             type="button"
             className="btn-icon-xs"
             aria-label="Add cue"
             title="Add cue"
+            onMouseEnter={() => {
+              if (addTimerRef.current) clearTimeout(addTimerRef.current)
+              setAddOpen(true)
+            }}
+            onMouseLeave={() => {
+              addTimerRef.current = setTimeout(() => setAddOpen(false), 200)
+            }}
           >
             <AppIcon name="actions.add" className="h-icon-sm w-icon-sm" />
           </button>
+          {addOpen && addBtnRef.current && (
+            <div
+              className="fixed z-50"
+              style={{
+                top: addBtnRef.current.getBoundingClientRect().top,
+                left: addBtnRef.current.getBoundingClientRect().right + 8,
+              }}
+              onMouseEnter={() => {
+                if (addTimerRef.current) clearTimeout(addTimerRef.current)
+                setAddOpen(true)
+              }}
+              onMouseLeave={() => {
+                addTimerRef.current = setTimeout(() => setAddOpen(false), 200)
+              }}
+            >
+              <CueTypeSubmenu
+                onSelect={(cueType) => {
+                  console.log("add cue", cueType)
+                  setAddOpen(false)
+                }}
+                onClose={() => setAddOpen(false)}
+              />
+            </div>
+          )}
         </div>
       </div>
+    {/* Context menu rendered outside the button hierarchy */}
+      {menuCueId && (
+        <ContextMenu
+          open={true}
+          onClose={() => { setMenuCueId(null); setMenuPos(null) }}
+          onAction={(action, cueType) => {
+            console.log(menuCueId, action, cueType)
+            setMenuCueId(null)
+            setMenuPos(null)
+          }}
+          position={menuPos}
+        />
+      )}
     </section>
   )
 }

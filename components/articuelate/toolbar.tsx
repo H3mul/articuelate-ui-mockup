@@ -2,35 +2,6 @@
 
 import { CURRENT_CUE, NEXT_CUE } from "./cue-data"
 import { AppIcon } from "@/components/icons"
-import type { AppIconName } from "@/components/icons"
-
-function ActionButton({
-  name,
-  label,
-  tone = "default",
-  onClick,
-}: {
-  name: AppIconName
-  label: string
-  tone?: "default" | "danger"
-  onClick?: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={label}
-      aria-label={label}
-      className={`btn-icon-sm outline-none focus:ring-2 focus:ring-border-focus ${
-        tone === "danger"
-          ? "btn-danger"
-          : "text-text-secondary hover:text-text-primary"
-      }`}
-    >
-      <AppIcon name={name} className="h-icon-md w-icon-md" />
-    </button>
-  )
-}
 
 export function Toolbar() {
   return (
@@ -88,25 +59,6 @@ export function Toolbar() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Cuelist action toolbar */}
-      <div className="action-toolbar">
-        <span className="label-mono-sm text-text-disabled">
-          Add
-        </span>
-        <ActionButton name="cueType.audio" label="Music" />
-        <ActionButton name="cueType.control" label="Control" />
-        <ActionButton name="cueType.osc" label="OSC" />
-
-        <div className="divider-vert mx-xs h-xl" />
-
-        <span className="label-mono-sm text-text-disabled">
-          Selected
-        </span>
-        <ActionButton name="actions.edit" label="Edit" />
-        <ActionButton name="actions.duplicate" label="Duplicate" />
-        <ActionButton name="actions.delete" label="Delete" tone="danger" />
       </div>
     </header>
   )

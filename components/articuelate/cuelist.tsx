@@ -92,6 +92,11 @@ function CueRow({
       className={rowCls}
       style={{ borderLeft: `3px solid ${stripe ?? "transparent"}` }}
     >
+      {/* Drag handle */}
+      <div className="drag-handle">
+        <AppIcon name="ui.grip" className="h-icon-sm w-icon-sm" />
+      </div>
+
       {/* Playhead */}
       <div className="flex items-center justify-center">
         {standby && (
@@ -162,6 +167,7 @@ export function Cuelist({
       {/* Header row */}
       <div className="cuelist-header">
         <div />
+        <div />
         <div>Cue</div>
         <div>Name</div>
         <div />
@@ -170,7 +176,7 @@ export function Cuelist({
         <div className="text-center">Post</div>
       </div>
 
-      {/* Rows */}
+      {/* Scrollable cue list + footer */}
       <div className="min-h-0 flex-1 overflow-y-auto">
         {CUES.map((cue, i) => (
           <CueRow
@@ -181,6 +187,18 @@ export function Cuelist({
             onSelect={() => onSelect(cue.id)}
           />
         ))}
+
+        {/* Cuelist footer */}
+        <div className="flex shrink-0 items-center border-t border-border-divider-40 pt-md pb-md px-sm">
+          <button
+            type="button"
+            className="btn-icon-xs"
+            aria-label="Add cue"
+            title="Add cue"
+          >
+            <AppIcon name="actions.add" className="h-icon-sm w-icon-sm" />
+          </button>
+        </div>
       </div>
     </section>
   )

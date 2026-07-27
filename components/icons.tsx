@@ -21,6 +21,7 @@ import {
   Rows2,
   Clock,
   MousePointerClick,
+  GripVertical,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -57,6 +58,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   "ui.mouseClick": MousePointerClick,
   "ui.chevronDown": ChevronDown,
   "ui.fileAudio": FileAudio,
+  "ui.grip": GripVertical,
 }
 
 export type AppIconName = keyof typeof ICON_MAP

@@ -107,11 +107,6 @@ export function Toolbar() {
         <ActionButton name="actions.edit" label="Edit" />
         <ActionButton name="actions.duplicate" label="Duplicate" />
         <ActionButton name="actions.delete" label="Delete" tone="danger" />
-
-        <div className="ml-auto flex items-center gap-sm font-mono text-mono-sm text-text-disabled">
-          <AppIcon name="actions.add" className="h-icon-sm w-icon-sm" />
-          drag media to add cues
-        </div>
       </div>
     </header>
   )

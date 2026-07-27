@@ -52,7 +52,7 @@ export function StatusBar({ selectedCount }: { selectedCount: number }) {
           <IconButton name="ui.settings" label="Settings" />
         </div>
 
-        <div className="divider-vert h-3" />
+        <div className="divider-vert h-md" />
 
         {/* Layout panel toggles */}
         <div className="flex items-center gap-sm">

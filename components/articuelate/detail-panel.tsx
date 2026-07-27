@@ -133,7 +133,7 @@ function TriggerSelector({ initial }: { initial: TriggerCondition }) {
               </option>
             ))}
           </select>
-          <AppIcon name="ui.chevronDown" className="pointer-events-none absolute right-1.5 top-1/2 h-icon-sm w-icon-sm -translate-y-1/2 text-text-disabled" />
+          <AppIcon name="ui.chevronDown" className="pointer-events-none absolute right-xs top-1/2 h-icon-sm w-icon-sm -translate-y-1/2 text-text-disabled" />
         </div>
       )}
     </div>
